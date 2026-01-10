@@ -851,6 +851,39 @@ async def approve_donation(donation_id: str, approval: DonationApproval, admin: 
     updated = await db.donations.find_one({"id": donation_id}, {"_id": 0})
     return DonationResponse(**updated)
 
+@api_router.get("/donations/{donation_id}/receipt")
+async def get_donation_receipt(donation_id: str):
+    """Generate and return a donation receipt for approved donations"""
+    donation = await db.donations.find_one({"id": donation_id}, {"_id": 0})
+    if not donation:
+        raise HTTPException(status_code=404, detail="Donation not found")
+    
+    if donation['status'] != 'approved':
+        raise HTTPException(status_code=400, detail="Receipt is only available for approved donations")
+    
+    # Get patient info
+    patient = await db.users.find_one({"id": donation['patient_id']}, {"_id": 0, "password": 0})
+    patient_name = patient['name'] if patient else donation.get('patient_name', 'Unknown')
+    
+    # Generate receipt data
+    receipt = {
+        "receipt_number": f"HW-{donation['id'][:8].upper()}",
+        "donation_id": donation['id'],
+        "transaction_id": donation['transaction_id'],
+        "amount": donation['amount'],
+        "currency": "USD",
+        "donor_name": donation.get('donor_name') or 'Anonymous',
+        "donor_email": donation.get('donor_email') or 'Not provided',
+        "patient_name": patient_name,
+        "donation_date": donation['created_at'],
+        "approval_date": donation.get('updated_at', donation['created_at']),
+        "status": "Approved",
+        "organization": "HavenWelfare",
+        "organization_message": "Thank you for your generous donation. Your contribution helps support rehabilitation and recovery programs."
+    }
+    
+    return receipt
+
 # ==================== TREATMENT REQUESTS ====================
 
 @api_router.post("/treatment-requests", response_model=TreatmentRequestResponse)

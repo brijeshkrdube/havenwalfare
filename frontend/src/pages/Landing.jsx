@@ -40,7 +40,7 @@ const Landing = () => {
         { value: '500+', label: 'Patients Helped' },
         { value: '50+', label: 'Verified Doctors' },
         { value: '25+', label: 'Rehab Centers' },
-        { value: '₹10L+', label: 'Donations Received' }
+        { value: '$100K+', label: 'Donations Received' }
     ];
 
     return (

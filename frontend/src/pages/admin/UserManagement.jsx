@@ -426,7 +426,7 @@ const UserManagement = () => {
                                                     Donation History
                                                 </span>
                                                 <span className="text-[#d97757] font-bold">
-                                                    Total: ₹{totalApprovedDonations.toLocaleString()}
+                                                    Total: ${totalApprovedDonations.toLocaleString()}
                                                 </span>
                                             </CardTitle>
                                         </CardHeader>

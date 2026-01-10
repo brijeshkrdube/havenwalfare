@@ -276,7 +276,7 @@ const DonorPortal = () => {
                                                 />
                                             </div>
                                             <div className="space-y-2">
-                                                <Label htmlFor="amount">Amount (₹) *</Label>
+                                                <Label htmlFor="amount">Amount ($) *</Label>
                                                 <Input
                                                     id="amount"
                                                     type="number"
@@ -414,7 +414,7 @@ const DonorPortal = () => {
                                             </div>
                                             <div className="flex items-center justify-between">
                                                 <span className="text-[#5c706a]">Amount:</span>
-                                                <span className="font-semibold text-[#d97757]">₹{trackingResult.amount.toLocaleString()}</span>
+                                                <span className="font-semibold text-[#d97757]">${trackingResult.amount.toLocaleString()}</span>
                                             </div>
                                             <div className="flex items-center justify-between">
                                                 <span className="text-[#5c706a]">Status:</span>

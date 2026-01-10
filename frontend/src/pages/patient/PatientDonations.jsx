@@ -49,7 +49,7 @@ const PatientDonations = () => {
                         <div>
                             <p className="text-[#5c706a] text-sm">Total Approved Donations</p>
                             <p className="font-manrope text-4xl font-bold text-[#d97757] mt-1">
-                                ₹{totalApproved.toLocaleString()}
+                                ${totalApproved.toLocaleString()}
                             </p>
                         </div>
                         <div className="w-16 h-16 bg-[#d97757]/20 rounded-2xl flex items-center justify-center">
@@ -97,7 +97,7 @@ const PatientDonations = () => {
                                         </div>
                                     </div>
                                     <div className="text-right">
-                                        <p className="font-semibold text-[#d97757]">₹{donation.amount.toLocaleString()}</p>
+                                        <p className="font-semibold text-[#d97757]">${donation.amount.toLocaleString()}</p>
                                         <span className={`text-xs px-2 py-1 rounded-full ${
                                             donation.status === 'approved' ? 'bg-green-100 text-green-800' :
                                             donation.status === 'rejected' ? 'bg-red-100 text-red-800' :

@@ -164,7 +164,7 @@ const DonationsManagement = () => {
                                                 <p className="text-[#0f392b]">{donation.patient_name}</p>
                                             </td>
                                             <td className="p-4">
-                                                <p className="font-semibold text-[#d97757]">₹{donation.amount.toLocaleString()}</p>
+                                                <p className="font-semibold text-[#d97757]">${donation.amount.toLocaleString()}</p>
                                             </td>
                                             <td className="p-4">
                                                 <span className={getStatusBadge(donation.status)}>
@@ -233,7 +233,7 @@ const DonationsManagement = () => {
                                 </div>
                                 <div>
                                     <p className="text-sm text-[#5c706a]">Amount</p>
-                                    <p className="font-semibold text-[#d97757]">₹{selectedDonation.amount.toLocaleString()}</p>
+                                    <p className="font-semibold text-[#d97757]">${selectedDonation.amount.toLocaleString()}</p>
                                 </div>
                                 <div>
                                     <p className="text-sm text-[#5c706a]">Donor</p>
@@ -287,7 +287,7 @@ const DonationsManagement = () => {
                                 <p className="text-sm text-[#5c706a]">Transaction ID</p>
                                 <p className="font-mono text-[#0f392b]">{selectedDonation.transaction_id}</p>
                                 <p className="text-sm text-[#5c706a] mt-2">Amount</p>
-                                <p className="font-semibold text-[#d97757]">₹{selectedDonation.amount.toLocaleString()}</p>
+                                <p className="font-semibold text-[#d97757]">${selectedDonation.amount.toLocaleString()}</p>
                             </div>
                             <div className="space-y-2">
                                 <Label>Admin Remarks</Label>
