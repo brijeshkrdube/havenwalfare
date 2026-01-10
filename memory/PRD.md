@@ -18,18 +18,21 @@ Build a secure, role-based welfare web application supporting rehabilitation and
 - Configure payment & SMTP settings
 - Verify donations manually
 - View audit logs and analytics
+- View patient medical history and donation history
 
 ### 2. Doctor
 - Medical professionals managing rehabilitation cases
 - Profile management with verification docs
 - Accept/reject patient treatment requests
 - Update treatment notes
+- View patient medical history in treatment requests
 
 ### 3. Patient
 - Individuals seeking rehabilitation
 - Choose doctor and rehab center
 - Track treatment status
 - View received donations
+- Update addiction and medical history
 
 ### 4. Donor
 - Public donors (login optional)
@@ -57,11 +60,18 @@ Build a secure, role-based welfare web application supporting rehabilitation and
 - [x] Treatment request flow
 - [x] Donor portal with donation submission
 
-### Phase 2 - Recent Updates (Completed - Jan 2026)
+### Phase 2 - Enhanced Features (Completed - Jan 2026)
 - [x] **Forgot Password Flow** - Email-based password reset via SendGrid (admin configurable SMTP)
 - [x] **Audit Logging** - Full audit trail for user actions (login, registration, approvals, settings changes)
 - [x] **Donation Receipt Download** - Printable receipts for approved donations
 - [x] **USD Currency** - Changed all currency displays from INR (₹) to USD ($)
+
+### Phase 3 - Notifications & History Display (Completed - Jan 2026)
+- [x] **Email Notifications for User Status Changes** - Sends email when users are approved/rejected/suspended
+- [x] **Email Notifications for Donation Approvals** - Sends email when donations are approved/rejected
+- [x] **Patient Donation History in Admin Panel** - Admin can view each patient's donation history and totals
+- [x] **Patient Medical History in Admin Panel** - Admin can view each patient's medical/addiction details
+- [x] **Patient Medical History in Doctor Panel** - Doctors can view patient medical history in treatment request details
 
 ## Tech Stack
 - **Backend:** FastAPI (Python)
@@ -77,9 +87,22 @@ Build a secure, role-based welfare web application supporting rehabilitation and
 - `POST /api/auth/forgot-password` - Request password reset
 - `POST /api/auth/reset-password` - Reset password with token
 - `GET /api/admin/audit-logs` - Get audit logs (admin only)
-- `GET /api/admin/users` - Get all users (admin only)
+- `GET /api/admin/users` - Get all users with donation history for patients (admin only)
+- `PUT /api/admin/users/{id}/status` - Update user status with email notification
+- `GET /api/treatment-requests` - Get treatment requests with patient profile data
 - `GET /api/donations/{id}/receipt` - Get donation receipt (approved only)
+- `PUT /api/donations/{id}/approve` - Approve/reject donation with email notification
 - `GET /api/donations/track/{transaction_id}` - Track donation by transaction ID
+
+## Database Schema
+- **users**: `{id, email, password, name, role, status, profile_data: {addiction_type_id, severity, duration, medical_history, ...}}`
+- **donations**: `{id, patient_id, amount, transaction_id, status, donor_email, ...}`
+- **treatment_requests**: `{id, patient_id, doctor_id, status, treatment_notes, ...}`
+- **rehab_centers**: `{id, name, address, city, state, pincode, status}`
+- **addiction_types**: `{id, name, description, severity_levels}`
+- **admin_settings**: `{type: 'payment'/'smtp', ...settings}`
+- **audit_logs**: `{id, user_id, user_email, action, details, created_at}`
+- **password_reset_tokens**: `{id, user_id, token, expires_at, used}`
 
 ## Admin Credentials (Initial)
 - Email: brijesh.kr.dube@gmail.com
@@ -87,7 +110,7 @@ Build a secure, role-based welfare web application supporting rehabilitation and
 
 ## Prioritized Backlog
 
-### P0 (Critical) - DONE
+### P0 (Critical) - ALL DONE ✅
 - [x] Authentication system
 - [x] Admin dashboard
 - [x] User management
@@ -96,18 +119,19 @@ Build a secure, role-based welfare web application supporting rehabilitation and
 - [x] Audit logging
 - [x] Donation receipts
 - [x] USD currency
+- [x] Email notifications
+- [x] Patient history display
 
-### P1 (High Priority) - DONE
+### P1 (High Priority) - DONE ✅
 - [x] Donation workflow
 - [x] Treatment request flow
 - [x] Payment settings
 - [x] Role-based dashboards
 
 ### P2 (Medium Priority) - Remaining
-- [ ] Email notifications for status changes (donation approved, user approved)
-- [ ] Patient medical history display in Admin/Doctor panels (frontend UI exists, needs backend data)
-- [ ] Advanced analytics/charts
+- [ ] Advanced analytics charts
 - [ ] Search and filter enhancements
+- [ ] Pagination for large lists
 
 ### P3 (Low Priority) - Future
 - [ ] Multi-language support
@@ -116,11 +140,9 @@ Build a secure, role-based welfare web application supporting rehabilitation and
 - [ ] SMS notifications
 - [ ] Video call link sharing between doctors and patients
 
-## Next Tasks
-1. Configure SendGrid API key in admin SMTP settings to enable password reset emails
-2. Display patient medical history in Admin User Management panel
-3. Display patient medical history in Doctor Patient Requests panel
-4. Add email notifications for key events
+## Configuration Required
+1. **SendGrid API Key** - Configure in Admin > SMTP Settings for email functionality
+2. **Payment Details** - Configure in Admin > Payment Settings for donation workflow
 
 ---
 *Last Updated: January 10, 2026*
