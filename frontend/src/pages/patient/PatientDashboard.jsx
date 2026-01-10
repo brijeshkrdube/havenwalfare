@@ -78,7 +78,7 @@ const PatientDashboard = () => {
                             <div>
                                 <p className="text-[#5c706a] text-sm">Total Donations Received</p>
                                 <p className="font-manrope text-3xl font-bold text-[#d97757] mt-2">
-                                    ₹{totalDonations.toLocaleString()}
+                                    ${totalDonations.toLocaleString()}
                                 </p>
                             </div>
                             <div className="w-12 h-12 bg-[#d97757]/20 rounded-2xl flex items-center justify-center">
