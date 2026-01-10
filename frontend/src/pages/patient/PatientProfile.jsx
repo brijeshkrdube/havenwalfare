@@ -385,14 +385,14 @@ const PatientProfile = () => {
                                 <div className="space-y-2">
                                     <Label>Preferred Doctor</Label>
                                     <Select 
-                                        value={preferences.preferred_doctor_id} 
-                                        onValueChange={(value) => setPreferences({ ...preferences, preferred_doctor_id: value })}
+                                        value={preferences.preferred_doctor_id || "none"} 
+                                        onValueChange={(value) => setPreferences({ ...preferences, preferred_doctor_id: value === "none" ? "" : value })}
                                     >
                                         <SelectTrigger data-testid="preferred-doctor-select">
                                             <SelectValue placeholder="Select preferred doctor" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value="">No preference</SelectItem>
+                                            <SelectItem value="none">No preference</SelectItem>
                                             {doctors.map((doctor) => (
                                                 <SelectItem key={doctor.id} value={doctor.id}>
                                                     {doctor.name} {doctor.profile_data?.specialization ? `(${doctor.profile_data.specialization})` : ''}
@@ -407,14 +407,14 @@ const PatientProfile = () => {
                                 <div className="space-y-2">
                                     <Label>Preferred Rehab Center</Label>
                                     <Select 
-                                        value={preferences.preferred_rehab_center_id} 
-                                        onValueChange={(value) => setPreferences({ ...preferences, preferred_rehab_center_id: value })}
+                                        value={preferences.preferred_rehab_center_id || "none"} 
+                                        onValueChange={(value) => setPreferences({ ...preferences, preferred_rehab_center_id: value === "none" ? "" : value })}
                                     >
                                         <SelectTrigger data-testid="preferred-center-select">
                                             <SelectValue placeholder="Select preferred center" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value="">No preference</SelectItem>
+                                            <SelectItem value="none">No preference</SelectItem>
                                             {rehabCenters.map((center) => (
                                                 <SelectItem key={center.id} value={center.id}>
                                                     {center.name} - {center.city}
