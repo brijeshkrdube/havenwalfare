@@ -283,7 +283,7 @@ const PatientProfile = () => {
                             <div className="space-y-2">
                                 <Label>Addiction Type *</Label>
                                 <Select 
-                                    value={medicalData.addiction_type_id} 
+                                    value={medicalData.addiction_type_id || undefined} 
                                     onValueChange={(value) => setMedicalData({ ...medicalData, addiction_type_id: value })}
                                 >
                                     <SelectTrigger data-testid="addiction-type-select">
@@ -301,7 +301,7 @@ const PatientProfile = () => {
                             <div className="space-y-2">
                                 <Label>Severity Level</Label>
                                 <Select 
-                                    value={medicalData.addiction_severity} 
+                                    value={medicalData.addiction_severity || undefined} 
                                     onValueChange={(value) => setMedicalData({ ...medicalData, addiction_severity: value })}
                                 >
                                     <SelectTrigger data-testid="severity-select">
