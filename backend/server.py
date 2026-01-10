@@ -89,6 +89,7 @@ class UpdateProfileRequest(BaseModel):
     name: Optional[str] = None
     phone: Optional[str] = None
     email: Optional[EmailStr] = None
+    profile_data: Optional[dict] = None
 
 class RehabCenterCreate(BaseModel):
     name: str
