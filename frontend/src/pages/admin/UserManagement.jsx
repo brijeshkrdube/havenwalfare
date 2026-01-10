@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { adminAPI } from '../../lib/api';
-import { UserCheck, UserX, Ban, RefreshCw, Search, Filter } from 'lucide-react';
+import { adminAPI, donationsAPI, addictionTypesAPI, rehabCentersAPI } from '../../lib/api';
+import { UserCheck, UserX, Ban, RefreshCw, Search, Eye, X, Heart, HandCoins, Building2, Phone, Mail, Clock } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../components/ui/select';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '../../components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../../components/ui/dialog';
 import { toast } from 'sonner';
 
 const UserManagement = () => {
@@ -15,20 +15,20 @@ const UserManagement = () => {
     const [roleFilter, setRoleFilter] = useState('all');
     const [statusFilter, setStatusFilter] = useState('all');
     const [selectedUser, setSelectedUser] = useState(null);
-    const [showDialog, setShowDialog] = useState(false);
+    const [showDetailDialog, setShowDetailDialog] = useState(false);
+    const [userDonations, setUserDonations] = useState([]);
+    const [addictionTypes, setAddictionTypes] = useState([]);
+    const [rehabCenters, setRehabCenters] = useState([]);
     const [actionLoading, setActionLoading] = useState(false);
 
     useEffect(() => {
         fetchUsers();
+        fetchReferenceData();
     }, [roleFilter, statusFilter]);
 
     const fetchUsers = async () => {
         setLoading(true);
         try {
-            const params = {};
-            if (roleFilter !== 'all') params.role = roleFilter;
-            if (statusFilter !== 'all') params.status = statusFilter;
-            
             const response = await adminAPI.getUsers(
                 statusFilter !== 'all' ? statusFilter : undefined,
                 roleFilter !== 'all' ? roleFilter : undefined
@@ -41,18 +41,56 @@ const UserManagement = () => {
         }
     };
 
+    const fetchReferenceData = async () => {
+        try {
+            const [typesRes, centersRes] = await Promise.all([
+                addictionTypesAPI.getAll(),
+                rehabCentersAPI.getAll()
+            ]);
+            setAddictionTypes(typesRes.data);
+            setRehabCenters(centersRes.data);
+        } catch (error) {
+            console.error('Failed to load reference data');
+        }
+    };
+
     const handleStatusChange = async (userId, newStatus) => {
         setActionLoading(true);
         try {
             await adminAPI.updateUserStatus(userId, newStatus);
             toast.success(`User status updated to ${newStatus}`);
             fetchUsers();
-            setShowDialog(false);
         } catch (error) {
             toast.error('Failed to update user status');
         } finally {
             setActionLoading(false);
         }
+    };
+
+    const viewUserDetails = async (user) => {
+        setSelectedUser(user);
+        setShowDetailDialog(true);
+        
+        // Fetch donations if patient
+        if (user.role === 'patient') {
+            try {
+                const response = await donationsAPI.getAll();
+                const patientDonations = response.data.filter(d => d.patient_id === user.id);
+                setUserDonations(patientDonations);
+            } catch (error) {
+                console.error('Failed to load donations');
+            }
+        }
+    };
+
+    const getAddictionTypeName = (id) => {
+        const type = addictionTypes.find(t => t.id === id);
+        return type?.name || 'Not specified';
+    };
+
+    const getRehabCenterName = (id) => {
+        const center = rehabCenters.find(c => c.id === id);
+        return center?.name || 'Not specified';
     };
 
     const filteredUsers = users.filter(user => 
@@ -69,6 +107,10 @@ const UserManagement = () => {
         };
         return badges[status] || badges.pending;
     };
+
+    const totalApprovedDonations = userDonations
+        .filter(d => d.status === 'approved')
+        .reduce((sum, d) => sum + d.amount, 0);
 
     return (
         <div className="space-y-6 fade-in" data-testid="user-management">
@@ -180,61 +222,72 @@ const UserManagement = () => {
                                                 {new Date(user.created_at).toLocaleDateString()}
                                             </td>
                                             <td className="p-4">
-                                                {user.role !== 'admin' && (
-                                                    <div className="flex gap-2">
-                                                        {user.status === 'pending' && (
-                                                            <>
+                                                <div className="flex gap-2">
+                                                    <Button
+                                                        size="sm"
+                                                        variant="ghost"
+                                                        onClick={() => viewUserDetails(user)}
+                                                        className="text-[#0f392b]"
+                                                        data-testid={`view-${user.id}`}
+                                                    >
+                                                        <Eye className="w-4 h-4" />
+                                                    </Button>
+                                                    {user.role !== 'admin' && (
+                                                        <>
+                                                            {user.status === 'pending' && (
+                                                                <>
+                                                                    <Button
+                                                                        size="sm"
+                                                                        onClick={() => handleStatusChange(user.id, 'approved')}
+                                                                        className="bg-green-600 hover:bg-green-700 text-white"
+                                                                        data-testid={`approve-${user.id}`}
+                                                                    >
+                                                                        <UserCheck className="w-4 h-4" />
+                                                                    </Button>
+                                                                    <Button
+                                                                        size="sm"
+                                                                        onClick={() => handleStatusChange(user.id, 'rejected')}
+                                                                        variant="destructive"
+                                                                        data-testid={`reject-${user.id}`}
+                                                                    >
+                                                                        <UserX className="w-4 h-4" />
+                                                                    </Button>
+                                                                </>
+                                                            )}
+                                                            {user.status === 'approved' && (
+                                                                <Button
+                                                                    size="sm"
+                                                                    onClick={() => handleStatusChange(user.id, 'suspended')}
+                                                                    variant="outline"
+                                                                    className="border-red-500 text-red-500 hover:bg-red-50"
+                                                                    data-testid={`suspend-${user.id}`}
+                                                                >
+                                                                    <Ban className="w-4 h-4" />
+                                                                </Button>
+                                                            )}
+                                                            {user.status === 'suspended' && (
                                                                 <Button
                                                                     size="sm"
                                                                     onClick={() => handleStatusChange(user.id, 'approved')}
                                                                     className="bg-green-600 hover:bg-green-700 text-white"
-                                                                    data-testid={`approve-${user.id}`}
+                                                                    data-testid={`reactivate-${user.id}`}
                                                                 >
                                                                     <UserCheck className="w-4 h-4" />
                                                                 </Button>
+                                                            )}
+                                                            {user.status === 'rejected' && (
                                                                 <Button
                                                                     size="sm"
-                                                                    onClick={() => handleStatusChange(user.id, 'rejected')}
-                                                                    variant="destructive"
-                                                                    data-testid={`reject-${user.id}`}
+                                                                    onClick={() => handleStatusChange(user.id, 'approved')}
+                                                                    className="bg-green-600 hover:bg-green-700 text-white"
+                                                                    data-testid={`approve-rejected-${user.id}`}
                                                                 >
-                                                                    <UserX className="w-4 h-4" />
+                                                                    <UserCheck className="w-4 h-4" />
                                                                 </Button>
-                                                            </>
-                                                        )}
-                                                        {user.status === 'approved' && (
-                                                            <Button
-                                                                size="sm"
-                                                                onClick={() => handleStatusChange(user.id, 'suspended')}
-                                                                variant="outline"
-                                                                className="border-red-500 text-red-500 hover:bg-red-50"
-                                                                data-testid={`suspend-${user.id}`}
-                                                            >
-                                                                <Ban className="w-4 h-4" />
-                                                            </Button>
-                                                        )}
-                                                        {user.status === 'suspended' && (
-                                                            <Button
-                                                                size="sm"
-                                                                onClick={() => handleStatusChange(user.id, 'approved')}
-                                                                className="bg-green-600 hover:bg-green-700 text-white"
-                                                                data-testid={`reactivate-${user.id}`}
-                                                            >
-                                                                <UserCheck className="w-4 h-4" />
-                                                            </Button>
-                                                        )}
-                                                        {user.status === 'rejected' && (
-                                                            <Button
-                                                                size="sm"
-                                                                onClick={() => handleStatusChange(user.id, 'approved')}
-                                                                className="bg-green-600 hover:bg-green-700 text-white"
-                                                                data-testid={`approve-rejected-${user.id}`}
-                                                            >
-                                                                <UserCheck className="w-4 h-4" />
-                                                            </Button>
-                                                        )}
-                                                    </div>
-                                                )}
+                                                            )}
+                                                        </>
+                                                    )}
+                                                </div>
                                             </td>
                                         </tr>
                                     ))}
@@ -244,6 +297,247 @@ const UserManagement = () => {
                     )}
                 </CardContent>
             </Card>
+
+            {/* User Detail Dialog */}
+            <Dialog open={showDetailDialog} onOpenChange={setShowDetailDialog}>
+                <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+                    <DialogHeader>
+                        <DialogTitle className="font-manrope text-xl text-[#0f392b] flex items-center justify-between">
+                            <span>{selectedUser?.role === 'patient' ? 'Patient' : selectedUser?.role === 'doctor' ? 'Doctor' : 'User'} Details</span>
+                            <span className={`text-sm px-3 py-1 rounded-full ${getStatusBadge(selectedUser?.status)}`}>
+                                {selectedUser?.status}
+                            </span>
+                        </DialogTitle>
+                    </DialogHeader>
+                    
+                    {selectedUser && (
+                        <div className="space-y-6">
+                            {/* Basic Info */}
+                            <div className="grid md:grid-cols-2 gap-4 p-4 bg-[#f8f9fa] rounded-xl">
+                                <div className="flex items-center gap-3">
+                                    <Mail className="w-5 h-5 text-[#5c706a]" />
+                                    <div>
+                                        <p className="text-xs text-[#5c706a]">Email</p>
+                                        <p className="font-medium text-[#0f392b]">{selectedUser.email}</p>
+                                    </div>
+                                </div>
+                                <div className="flex items-center gap-3">
+                                    <Phone className="w-5 h-5 text-[#5c706a]" />
+                                    <div>
+                                        <p className="text-xs text-[#5c706a]">Phone</p>
+                                        <p className="font-medium text-[#0f392b]">{selectedUser.phone || 'Not provided'}</p>
+                                    </div>
+                                </div>
+                                <div className="flex items-center gap-3">
+                                    <Clock className="w-5 h-5 text-[#5c706a]" />
+                                    <div>
+                                        <p className="text-xs text-[#5c706a]">Registered</p>
+                                        <p className="font-medium text-[#0f392b]">{new Date(selectedUser.created_at).toLocaleDateString()}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Patient-specific: Addiction & Medical History */}
+                            {selectedUser.role === 'patient' && (
+                                <>
+                                    <Card className="border-[#d97757]/30">
+                                        <CardHeader className="pb-2">
+                                            <CardTitle className="font-manrope text-lg text-[#0f392b] flex items-center gap-2">
+                                                <Heart className="w-5 h-5 text-[#d97757]" />
+                                                Addiction & Medical History
+                                            </CardTitle>
+                                        </CardHeader>
+                                        <CardContent>
+                                            {selectedUser.profile_data && Object.keys(selectedUser.profile_data).length > 0 ? (
+                                                <div className="space-y-4">
+                                                    <div className="grid md:grid-cols-3 gap-4">
+                                                        <div className="p-3 bg-[#f8f9fa] rounded-lg">
+                                                            <p className="text-xs text-[#5c706a]">Addiction Type</p>
+                                                            <p className="font-semibold text-[#0f392b]">
+                                                                {getAddictionTypeName(selectedUser.profile_data.addiction_type_id)}
+                                                            </p>
+                                                        </div>
+                                                        <div className="p-3 bg-[#f8f9fa] rounded-lg">
+                                                            <p className="text-xs text-[#5c706a]">Severity</p>
+                                                            <p className="font-semibold text-[#0f392b] capitalize">
+                                                                {selectedUser.profile_data.addiction_severity || 'Not specified'}
+                                                            </p>
+                                                        </div>
+                                                        <div className="p-3 bg-[#f8f9fa] rounded-lg">
+                                                            <p className="text-xs text-[#5c706a]">Duration</p>
+                                                            <p className="font-semibold text-[#0f392b]">
+                                                                {selectedUser.profile_data.addiction_duration || 'Not specified'}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    {selectedUser.profile_data.medical_history && (
+                                                        <div className="p-3 bg-[#f8f9fa] rounded-lg">
+                                                            <p className="text-xs text-[#5c706a] mb-1">Medical History</p>
+                                                            <p className="text-[#0f392b]">{selectedUser.profile_data.medical_history}</p>
+                                                        </div>
+                                                    )}
+                                                    
+                                                    {selectedUser.profile_data.previous_treatments && (
+                                                        <div className="p-3 bg-[#f8f9fa] rounded-lg">
+                                                            <p className="text-xs text-[#5c706a] mb-1">Previous Treatments</p>
+                                                            <p className="text-[#0f392b]">{selectedUser.profile_data.previous_treatments}</p>
+                                                        </div>
+                                                    )}
+                                                    
+                                                    {selectedUser.profile_data.current_medications && (
+                                                        <div className="p-3 bg-[#f8f9fa] rounded-lg">
+                                                            <p className="text-xs text-[#5c706a] mb-1">Current Medications</p>
+                                                            <p className="text-[#0f392b]">{selectedUser.profile_data.current_medications}</p>
+                                                        </div>
+                                                    )}
+
+                                                    {/* Preferences */}
+                                                    <div className="grid md:grid-cols-2 gap-4 pt-2 border-t">
+                                                        <div className="p-3 bg-[#f8f9fa] rounded-lg">
+                                                            <p className="text-xs text-[#5c706a]">Preferred Rehab Center</p>
+                                                            <p className="font-semibold text-[#0f392b]">
+                                                                {getRehabCenterName(selectedUser.profile_data.preferred_rehab_center_id)}
+                                                            </p>
+                                                        </div>
+                                                        <div className="p-3 bg-[#f8f9fa] rounded-lg">
+                                                            <p className="text-xs text-[#5c706a]">Emergency Contact</p>
+                                                            <p className="font-semibold text-[#0f392b]">
+                                                                {selectedUser.profile_data.emergency_contact_name || 'Not provided'}
+                                                                {selectedUser.profile_data.emergency_contact_phone && (
+                                                                    <span className="text-[#5c706a] font-normal"> ({selectedUser.profile_data.emergency_contact_phone})</span>
+                                                                )}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ) : (
+                                                <p className="text-[#5c706a] text-center py-4">No medical information provided yet</p>
+                                            )}
+                                        </CardContent>
+                                    </Card>
+
+                                    {/* Donation History */}
+                                    <Card>
+                                        <CardHeader className="pb-2">
+                                            <CardTitle className="font-manrope text-lg text-[#0f392b] flex items-center justify-between">
+                                                <span className="flex items-center gap-2">
+                                                    <HandCoins className="w-5 h-5 text-[#d97757]" />
+                                                    Donation History
+                                                </span>
+                                                <span className="text-[#d97757] font-bold">
+                                                    Total: ₹{totalApprovedDonations.toLocaleString()}
+                                                </span>
+                                            </CardTitle>
+                                        </CardHeader>
+                                        <CardContent>
+                                            {userDonations.length > 0 ? (
+                                                <div className="space-y-3 max-h-[200px] overflow-y-auto">
+                                                    {userDonations.map((donation) => (
+                                                        <div 
+                                                            key={donation.id} 
+                                                            className="flex items-center justify-between p-3 bg-[#f8f9fa] rounded-lg"
+                                                        >
+                                                            <div>
+                                                                <p className="font-medium text-[#0f392b]">
+                                                                    {donation.donor_name || 'Anonymous'}
+                                                                </p>
+                                                                <p className="text-xs text-[#5c706a]">
+                                                                    {new Date(donation.created_at).toLocaleDateString()} • {donation.transaction_id}
+                                                                </p>
+                                                            </div>
+                                                            <div className="text-right">
+                                                                <p className="font-semibold text-[#d97757]">₹{donation.amount.toLocaleString()}</p>
+                                                                <span className={`text-xs px-2 py-0.5 rounded-full ${
+                                                                    donation.status === 'approved' ? 'bg-green-100 text-green-800' :
+                                                                    donation.status === 'rejected' ? 'bg-red-100 text-red-800' :
+                                                                    'bg-yellow-100 text-yellow-800'
+                                                                }`}>
+                                                                    {donation.status}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            ) : (
+                                                <p className="text-[#5c706a] text-center py-4">No donations received yet</p>
+                                            )}
+                                        </CardContent>
+                                    </Card>
+                                </>
+                            )}
+
+                            {/* Doctor-specific: Professional Info */}
+                            {selectedUser.role === 'doctor' && selectedUser.profile_data && (
+                                <Card>
+                                    <CardHeader className="pb-2">
+                                        <CardTitle className="font-manrope text-lg text-[#0f392b]">Professional Information</CardTitle>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <div className="grid md:grid-cols-2 gap-4">
+                                            {selectedUser.profile_data.specialization && (
+                                                <div className="p-3 bg-[#f8f9fa] rounded-lg">
+                                                    <p className="text-xs text-[#5c706a]">Specialization</p>
+                                                    <p className="font-semibold text-[#0f392b]">{selectedUser.profile_data.specialization}</p>
+                                                </div>
+                                            )}
+                                            {selectedUser.profile_data.experience && (
+                                                <div className="p-3 bg-[#f8f9fa] rounded-lg">
+                                                    <p className="text-xs text-[#5c706a]">Experience</p>
+                                                    <p className="font-semibold text-[#0f392b]">{selectedUser.profile_data.experience}</p>
+                                                </div>
+                                            )}
+                                            {selectedUser.profile_data.qualification && (
+                                                <div className="p-3 bg-[#f8f9fa] rounded-lg">
+                                                    <p className="text-xs text-[#5c706a]">Qualification</p>
+                                                    <p className="font-semibold text-[#0f392b]">{selectedUser.profile_data.qualification}</p>
+                                                </div>
+                                            )}
+                                        </div>
+                                        {selectedUser.profile_data.bio && (
+                                            <div className="mt-4 p-3 bg-[#f8f9fa] rounded-lg">
+                                                <p className="text-xs text-[#5c706a] mb-1">Bio</p>
+                                                <p className="text-[#0f392b]">{selectedUser.profile_data.bio}</p>
+                                            </div>
+                                        )}
+                                    </CardContent>
+                                </Card>
+                            )}
+
+                            {/* Action Buttons */}
+                            {selectedUser.role !== 'admin' && (
+                                <div className="flex justify-end gap-3 pt-4 border-t">
+                                    {selectedUser.status === 'pending' && (
+                                        <>
+                                            <Button
+                                                onClick={() => { handleStatusChange(selectedUser.id, 'approved'); setShowDetailDialog(false); }}
+                                                className="bg-green-600 hover:bg-green-700 text-white"
+                                            >
+                                                <UserCheck className="w-4 h-4 mr-2" /> Approve
+                                            </Button>
+                                            <Button
+                                                onClick={() => { handleStatusChange(selectedUser.id, 'rejected'); setShowDetailDialog(false); }}
+                                                variant="destructive"
+                                            >
+                                                <UserX className="w-4 h-4 mr-2" /> Reject
+                                            </Button>
+                                        </>
+                                    )}
+                                    {selectedUser.status === 'approved' && (
+                                        <Button
+                                            onClick={() => { handleStatusChange(selectedUser.id, 'suspended'); setShowDetailDialog(false); }}
+                                            variant="outline"
+                                            className="border-red-500 text-red-500 hover:bg-red-50"
+                                        >
+                                            <Ban className="w-4 h-4 mr-2" /> Suspend
+                                        </Button>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+                    )}
+                </DialogContent>
+            </Dialog>
         </div>
     );
 };
