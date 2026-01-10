@@ -252,7 +252,7 @@ const Landing = () => {
                             <span className="font-manrope text-xl font-bold text-white">HavenWelfare</span>
                         </div>
                         <p className="text-white/50 text-sm">
-                            © 2024 HavenWelfare. All rights reserved. Empowering recovery, one step at a time.
+                            © {new Date().getFullYear()} HavenWelfare. All rights reserved. Empowering recovery, one step at a time.
                         </p>
                     </div>
                 </div>

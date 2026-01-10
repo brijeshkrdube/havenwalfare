@@ -535,7 +535,7 @@ const DonorPortal = () => {
             <footer className="bg-[#0f392b] py-12 px-6 mt-16">
                 <div className="max-w-7xl mx-auto text-center">
                     <p className="text-white/50 text-sm">
-                        © 2024 HavenWelfare. All rights reserved.
+                        © {new Date().getFullYear()} HavenWelfare. All rights reserved.
                     </p>
                 </div>
             </footer>
