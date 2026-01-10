@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { Shield, Users, Building2, HandCoins, ArrowRight, CheckCircle } from 'lucide-react';
 import { Button } from '../components/ui/button';
 
-const LOGO_URL = "https://customer-assets.emergentagent.com/job_heal-haven/artifacts/tlnpq5i2_Gemini_Generated_Image_92dtgl92dtgl92dt__1_-removebg-preview.png";
+const LOGO_URL = "https://customer-assets.emergentagent.com/job_3463593f-4cba-425e-a575-89c0d925427c/artifacts/n1f21t65_unnamed-removebg-preview.png";
 
 const Landing = () => {
     const fadeUp = {
