@@ -1,34 +1,183 @@
-.App-logo {
-    height: 40vmin;
-    pointer-events: none;
+/* HavenWelfare Custom Styles */
+
+.font-manrope {
+    font-family: 'Manrope', sans-serif;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-    .App-logo {
-        animation: App-logo-spin infinite 20s linear;
+/* Animations */
+.fade-in {
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }
 
-.App-header {
-    background-color: #0f0f10;
+.slide-in {
+    animation: slideIn 0.4s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Dashboard Layout */
+.dashboard-container {
     min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-size: calc(10px + 2vmin);
+    background-color: #f8f9fa;
+}
+
+.dashboard-sidebar {
+    background-color: #0f392b;
+    color: white;
+    min-height: 100vh;
+    width: 16rem;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 40;
+}
+
+.dashboard-content {
+    margin-left: 16rem;
+    padding: 2rem;
+}
+
+/* Status Badges */
+.badge-pending {
+    background-color: #fef3c7;
+    color: #92400e;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.badge-approved {
+    background-color: #d1fae5;
+    color: #065f46;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.badge-rejected {
+    background-color: #fee2e2;
+    color: #991b1b;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.badge-submitted {
+    background-color: #dbeafe;
+    color: #1e40af;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+/* Card Styles */
+.card-haven {
+    background-color: white;
+    border: 1px solid #e0e6e4;
+    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+    border-radius: 1rem;
+    transition: all 0.3s ease;
+}
+
+.card-haven:hover {
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+}
+
+/* Button Styles */
+.btn-primary {
+    background-color: #d97757;
+    color: white;
+    border-radius: 9999px;
+    padding: 0.75rem 2rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #c26649;
+}
+
+.btn-secondary {
+    background-color: transparent;
+    border: 2px solid #0f392b;
+    color: #0f392b;
+    border-radius: 9999px;
+    padding: 0.75rem 2rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+    background-color: #0f392b;
     color: white;
 }
 
-.App-link {
-    color: #61dafb;
+/* Input Styles */
+.input-haven {
+    background-color: #f8f9fa;
+    border-color: transparent;
+    border-radius: 0.5rem;
+    height: 3rem;
+    padding: 0 1rem;
 }
 
-@keyframes App-logo-spin {
-    from {
-        transform: rotate(0deg);
+.input-haven:focus {
+    border-color: #0f392b;
+    box-shadow: 0 0 0 2px rgba(15, 57, 43, 0.2);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f4f1ea;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #5c706a;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #0f392b;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .dashboard-sidebar {
+        position: relative;
+        width: 100%;
+        min-height: auto;
     }
-    to {
-        transform: rotate(360deg);
+    
+    .dashboard-content {
+        margin-left: 0;
     }
 }
