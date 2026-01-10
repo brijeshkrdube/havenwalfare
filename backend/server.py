@@ -327,6 +327,133 @@ async def send_password_reset_email(email: str, token: str, name: str):
         logger.error(f"Failed to send email: {e}")
         return False
 
+async def send_user_status_notification(email: str, name: str, status: str, role: str):
+    """Send email notification when user status changes (approved/rejected/suspended)"""
+    settings = await db.admin_settings.find_one({"type": "smtp"}, {"_id": 0})
+    if not settings or not settings.get('sendgrid_api_key'):
+        logger.warning("SMTP not configured, cannot send user status notification")
+        return False
+    
+    try:
+        frontend_url = os.environ.get('FRONTEND_URL', 'http://localhost:3000')
+        
+        status_messages = {
+            'approved': {
+                'subject': 'Account Approved - HavenWelfare',
+                'heading': 'Your Account Has Been Approved!',
+                'message': f'Great news! Your {role} account has been approved. You can now log in and access all features.',
+                'button_text': 'Login Now',
+                'button_link': f'{frontend_url}/login',
+                'color': '#22c55e'
+            },
+            'rejected': {
+                'subject': 'Account Application Update - HavenWelfare',
+                'heading': 'Account Application Not Approved',
+                'message': 'Unfortunately, your account application was not approved at this time. Please contact our support team for more information.',
+                'button_text': 'Contact Support',
+                'button_link': f'{frontend_url}',
+                'color': '#ef4444'
+            },
+            'suspended': {
+                'subject': 'Account Suspended - HavenWelfare',
+                'heading': 'Your Account Has Been Suspended',
+                'message': 'Your account has been temporarily suspended. Please contact our support team for more information.',
+                'button_text': 'Contact Support',
+                'button_link': f'{frontend_url}',
+                'color': '#f59e0b'
+            }
+        }
+        
+        info = status_messages.get(status)
+        if not info:
+            return False
+        
+        message = Mail(
+            from_email=settings.get('sender_email', 'noreply@havenwelfare.com'),
+            to_emails=email,
+            subject=info['subject'],
+            html_content=f"""
+            <html>
+            <body style="font-family: Inter, sans-serif; color: #0f392b; padding: 20px;">
+                <div style="max-width: 600px; margin: 0 auto; background: #f4f1ea; padding: 40px; border-radius: 16px;">
+                    <h1 style="font-family: Manrope, sans-serif; color: {info['color']};">{info['heading']}</h1>
+                    <p>Hello {name},</p>
+                    <p>{info['message']}</p>
+                    <a href="{info['button_link']}" style="display: inline-block; background: #d97757; color: white; padding: 12px 32px; border-radius: 50px; text-decoration: none; margin: 20px 0;">{info['button_text']}</a>
+                    <hr style="border: none; border-top: 1px solid #e0e6e4; margin: 20px 0;">
+                    <p style="font-size: 12px; color: #5c706a;">HavenWelfare - Rehabilitation & Welfare Platform</p>
+                </div>
+            </body>
+            </html>
+            """
+        )
+        
+        sg = SendGridAPIClient(settings['sendgrid_api_key'])
+        sg.send(message)
+        logger.info(f"User status notification sent to {email}")
+        return True
+    except Exception as e:
+        logger.error(f"Failed to send user status notification: {e}")
+        return False
+
+async def send_donation_notification(donor_email: str, donor_name: str, patient_name: str, amount: float, status: str, admin_remarks: str = None):
+    """Send email notification when donation status changes"""
+    settings = await db.admin_settings.find_one({"type": "smtp"}, {"_id": 0})
+    if not settings or not settings.get('sendgrid_api_key'):
+        logger.warning("SMTP not configured, cannot send donation notification")
+        return False
+    
+    if not donor_email:
+        logger.warning("No donor email provided, cannot send notification")
+        return False
+    
+    try:
+        frontend_url = os.environ.get('FRONTEND_URL', 'http://localhost:3000')
+        
+        if status == 'approved':
+            subject = 'Donation Approved - HavenWelfare'
+            heading = 'Thank You for Your Generous Donation!'
+            message = f'Your donation of ${amount:,.2f} to support {patient_name} has been verified and approved.'
+            extra_message = 'You can now download your donation receipt from our portal.'
+            button_text = 'View Receipt'
+            color = '#22c55e'
+        else:
+            subject = 'Donation Status Update - HavenWelfare'
+            heading = 'Donation Verification Update'
+            message = f'Your donation submission of ${amount:,.2f} could not be verified at this time.'
+            extra_message = f'Admin remarks: {admin_remarks}' if admin_remarks else 'Please contact support for more details.'
+            button_text = 'Contact Support'
+            color = '#ef4444'
+        
+        html_message = Mail(
+            from_email=settings.get('sender_email', 'noreply@havenwelfare.com'),
+            to_emails=donor_email,
+            subject=subject,
+            html_content=f"""
+            <html>
+            <body style="font-family: Inter, sans-serif; color: #0f392b; padding: 20px;">
+                <div style="max-width: 600px; margin: 0 auto; background: #f4f1ea; padding: 40px; border-radius: 16px;">
+                    <h1 style="font-family: Manrope, sans-serif; color: {color};">{heading}</h1>
+                    <p>Hello {donor_name or 'Donor'},</p>
+                    <p>{message}</p>
+                    <p>{extra_message}</p>
+                    <a href="{frontend_url}/donate" style="display: inline-block; background: #d97757; color: white; padding: 12px 32px; border-radius: 50px; text-decoration: none; margin: 20px 0;">{button_text}</a>
+                    <hr style="border: none; border-top: 1px solid #e0e6e4; margin: 20px 0;">
+                    <p style="font-size: 12px; color: #5c706a;">HavenWelfare - Rehabilitation & Welfare Platform</p>
+                </div>
+            </body>
+            </html>
+            """
+        )
+        
+        sg = SendGridAPIClient(settings['sendgrid_api_key'])
+        sg.send(html_message)
+        logger.info(f"Donation notification sent to {donor_email}")
+        return True
+    except Exception as e:
+        logger.error(f"Failed to send donation notification: {e}")
+        return False
+
 # ==================== SEED ADMIN ====================
 
 async def seed_admin():
