@@ -258,21 +258,92 @@ const PatientRequests = () => {
                                 </Card>
                             )}
 
-                            {/* Medical History Note */}
-                            <Card className="border-[#d97757]/30 bg-[#d97757]/5">
-                                <CardContent className="p-4">
-                                    <div className="flex items-start gap-3">
-                                        <AlertCircle className="w-5 h-5 text-[#d97757] mt-0.5" />
-                                        <div>
-                                            <h3 className="font-semibold text-[#0f392b] mb-1">Patient Medical History</h3>
-                                            <p className="text-sm text-[#5c706a]">
-                                                To view the complete medical history, addiction details, and emergency contact information 
-                                                for this patient, please check the Admin panel's User Management section or contact the admin.
-                                            </p>
+                            {/* Medical History - from patient_profile_data */}
+                            {selectedRequest.patient_profile_data && Object.keys(selectedRequest.patient_profile_data).length > 0 ? (
+                                <Card className="border-[#d97757]/30">
+                                    <CardHeader className="pb-2">
+                                        <CardTitle className="font-manrope text-lg text-[#0f392b] flex items-center gap-2">
+                                            <Heart className="w-5 h-5 text-[#d97757]" />
+                                            Patient Medical History
+                                        </CardTitle>
+                                    </CardHeader>
+                                    <CardContent className="space-y-4">
+                                        <div className="grid md:grid-cols-3 gap-4">
+                                            <div className="p-3 bg-[#f8f9fa] rounded-lg">
+                                                <p className="text-xs text-[#5c706a]">Addiction Type</p>
+                                                <p className="font-semibold text-[#0f392b]">
+                                                    {getAddictionTypeName(selectedRequest.patient_profile_data.addiction_type_id) || selectedRequest.addiction_type_name}
+                                                </p>
+                                            </div>
+                                            <div className="p-3 bg-[#f8f9fa] rounded-lg">
+                                                <p className="text-xs text-[#5c706a]">Severity</p>
+                                                <p className="font-semibold text-[#0f392b] capitalize">
+                                                    {selectedRequest.patient_profile_data.addiction_severity || 'Not specified'}
+                                                </p>
+                                            </div>
+                                            <div className="p-3 bg-[#f8f9fa] rounded-lg">
+                                                <p className="text-xs text-[#5c706a]">Duration</p>
+                                                <p className="font-semibold text-[#0f392b]">
+                                                    {selectedRequest.patient_profile_data.addiction_duration || 'Not specified'}
+                                                </p>
+                                            </div>
                                         </div>
-                                    </div>
-                                </CardContent>
-                            </Card>
+                                        
+                                        {selectedRequest.patient_profile_data.medical_history && (
+                                            <div className="p-3 bg-[#f8f9fa] rounded-lg">
+                                                <p className="text-xs text-[#5c706a] mb-1">Medical History</p>
+                                                <p className="text-[#0f392b]">{selectedRequest.patient_profile_data.medical_history}</p>
+                                            </div>
+                                        )}
+                                        
+                                        {selectedRequest.patient_profile_data.previous_treatments && (
+                                            <div className="p-3 bg-[#f8f9fa] rounded-lg">
+                                                <p className="text-xs text-[#5c706a] mb-1">Previous Treatments</p>
+                                                <p className="text-[#0f392b]">{selectedRequest.patient_profile_data.previous_treatments}</p>
+                                            </div>
+                                        )}
+                                        
+                                        {selectedRequest.patient_profile_data.current_medications && (
+                                            <div className="p-3 bg-[#f8f9fa] rounded-lg">
+                                                <p className="text-xs text-[#5c706a] mb-1">Current Medications</p>
+                                                <p className="text-[#0f392b]">{selectedRequest.patient_profile_data.current_medications}</p>
+                                            </div>
+                                        )}
+
+                                        {/* Emergency Contact */}
+                                        {(selectedRequest.patient_profile_data.emergency_contact_name || selectedRequest.patient_profile_data.emergency_contact_phone) && (
+                                            <div className="p-3 bg-[#f8f9fa] rounded-lg flex items-center gap-3">
+                                                <Phone className="w-4 h-4 text-[#d97757]" />
+                                                <div>
+                                                    <p className="text-xs text-[#5c706a]">Emergency Contact</p>
+                                                    <p className="font-semibold text-[#0f392b]">
+                                                        {selectedRequest.patient_profile_data.emergency_contact_name || 'N/A'}
+                                                        {selectedRequest.patient_profile_data.emergency_contact_phone && (
+                                                            <span className="text-[#5c706a] font-normal ml-2">
+                                                                ({selectedRequest.patient_profile_data.emergency_contact_phone})
+                                                            </span>
+                                                        )}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </CardContent>
+                                </Card>
+                            ) : (
+                                <Card className="border-[#d97757]/30 bg-[#d97757]/5">
+                                    <CardContent className="p-4">
+                                        <div className="flex items-start gap-3">
+                                            <AlertCircle className="w-5 h-5 text-[#d97757] mt-0.5" />
+                                            <div>
+                                                <h3 className="font-semibold text-[#0f392b] mb-1">No Medical History Available</h3>
+                                                <p className="text-sm text-[#5c706a]">
+                                                    The patient has not yet provided their medical history and addiction details.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            )}
 
                             {/* Treatment Notes (if accepted) */}
                             {selectedRequest.status === 'accepted' && (
