@@ -74,6 +74,20 @@ class UserResponse(BaseModel):
     created_at: str
     profile_data: Optional[dict] = None
 
+class UserWithHistoryResponse(BaseModel):
+    """Extended user response with donation history for admin panel"""
+    model_config = ConfigDict(extra="ignore")
+    id: str
+    email: str
+    name: str
+    phone: Optional[str] = None
+    role: str
+    status: str
+    created_at: str
+    profile_data: Optional[dict] = None
+    donation_history: Optional[List[dict]] = None
+    total_donations: Optional[float] = None
+
 class ForgotPasswordRequest(BaseModel):
     email: EmailStr
 
