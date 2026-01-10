@@ -826,6 +826,7 @@ async def track_donation(transaction_id: str):
         raise HTTPException(status_code=404, detail="Donation not found")
     
     return {
+        "donation_id": donation['id'],
         "transaction_id": donation['transaction_id'],
         "amount": donation['amount'],
         "status": donation['status'],
