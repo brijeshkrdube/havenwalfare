@@ -484,6 +484,11 @@ async def update_profile(request: UpdateProfileRequest, user: dict = Depends(get
         if existing:
             raise HTTPException(status_code=400, detail="Email already in use")
         update_data['email'] = request.email
+    if request.profile_data is not None:
+        # Merge with existing profile_data
+        existing_profile = user.get('profile_data', {}) or {}
+        merged_profile = {**existing_profile, **request.profile_data}
+        update_data['profile_data'] = merged_profile
     
     if update_data:
         await db.users.update_one({"id": user['id']}, {"$set": update_data})
