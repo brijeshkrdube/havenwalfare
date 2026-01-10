@@ -18,6 +18,8 @@ import {
     Activity
 } from 'lucide-react';
 
+const LOGO_URL = "https://customer-assets.emergentagent.com/job_heal-haven/artifacts/tlnpq5i2_Gemini_Generated_Image_92dtgl92dtgl92dt__1_-removebg-preview.png";
+
 const Sidebar = () => {
     const { user, logout } = useAuth();
     const location = useLocation();
@@ -69,9 +71,7 @@ const Sidebar = () => {
             {/* Logo */}
             <div className="p-6 border-b border-white/10">
                 <Link to="/" className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-[#d97757] rounded-xl flex items-center justify-center">
-                        <Heart className="w-6 h-6 text-white" />
-                    </div>
+                    <img src={LOGO_URL} alt="HavenWelfare" className="w-10 h-10 object-contain" />
                     <span className="font-manrope text-xl font-bold text-white">HavenWelfare</span>
                 </Link>
             </div>

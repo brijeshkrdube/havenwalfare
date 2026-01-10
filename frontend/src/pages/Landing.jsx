@@ -1,8 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Heart, Shield, Users, Building2, HandCoins, ArrowRight, CheckCircle } from 'lucide-react';
+import { Shield, Users, Building2, HandCoins, ArrowRight, CheckCircle } from 'lucide-react';
 import { Button } from '../components/ui/button';
+
+const LOGO_URL = "https://customer-assets.emergentagent.com/job_heal-haven/artifacts/tlnpq5i2_Gemini_Generated_Image_92dtgl92dtgl92dt__1_-removebg-preview.png";
 
 const Landing = () => {
     const fadeUp = {
@@ -47,9 +49,7 @@ const Landing = () => {
             <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-lg border-b border-[#e0e6e4]">
                 <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
                     <Link to="/" className="flex items-center gap-3" data-testid="logo-link">
-                        <div className="w-10 h-10 bg-[#0f392b] rounded-xl flex items-center justify-center">
-                            <Heart className="w-6 h-6 text-white" />
-                        </div>
+                        <img src={LOGO_URL} alt="HavenWelfare" className="w-10 h-10 object-contain" />
                         <span className="font-manrope text-xl font-bold text-[#0f392b]">HavenWelfare</span>
                     </Link>
                     <div className="flex items-center gap-4">
@@ -248,9 +248,7 @@ const Landing = () => {
                 <div className="max-w-7xl mx-auto">
                     <div className="flex flex-col md:flex-row justify-between items-center gap-6">
                         <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-[#d97757] rounded-xl flex items-center justify-center">
-                                <Heart className="w-6 h-6 text-white" />
-                            </div>
+                            <img src={LOGO_URL} alt="HavenWelfare" className="w-10 h-10 object-contain" />
                             <span className="font-manrope text-xl font-bold text-white">HavenWelfare</span>
                         </div>
                         <p className="text-white/50 text-sm">

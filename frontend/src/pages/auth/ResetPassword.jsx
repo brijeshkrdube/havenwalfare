@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { authAPI } from '../../lib/api';
-import { Heart, Lock, Eye, EyeOff, ArrowRight, CheckCircle } from 'lucide-react';
+import { Lock, Eye, EyeOff, ArrowRight, CheckCircle } from 'lucide-react';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
 import { toast } from 'sonner';
+
+const LOGO_URL = "https://customer-assets.emergentagent.com/job_heal-haven/artifacts/tlnpq5i2_Gemini_Generated_Image_92dtgl92dtgl92dt__1_-removebg-preview.png";
 
 const ResetPassword = () => {
     const navigate = useNavigate();
@@ -100,9 +102,7 @@ const ResetPassword = () => {
             <div className="w-full max-w-md space-y-8">
                 <div>
                     <Link to="/" className="flex items-center gap-3 mb-8">
-                        <div className="w-10 h-10 bg-[#0f392b] rounded-xl flex items-center justify-center">
-                            <Heart className="w-6 h-6 text-white" />
-                        </div>
+                        <img src={LOGO_URL} alt="HavenWelfare" className="w-10 h-10 object-contain" />
                         <span className="font-manrope text-xl font-bold text-[#0f392b]">HavenWelfare</span>
                     </Link>
                     <h1 className="font-manrope text-3xl font-bold text-[#0f392b] tracking-tight">

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { donationsAPI } from '../lib/api';
-import { Heart, HandCoins, User, ArrowRight, CreditCard, QrCode, Upload, Search, CheckCircle } from 'lucide-react';
+import { HandCoins, User, ArrowRight, CreditCard, QrCode, Upload, Search, CheckCircle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -11,6 +11,7 @@ import { Checkbox } from '../components/ui/checkbox';
 import { toast } from 'sonner';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const LOGO_URL = "https://customer-assets.emergentagent.com/job_heal-haven/artifacts/tlnpq5i2_Gemini_Generated_Image_92dtgl92dtgl92dt__1_-removebg-preview.png";
 
 const DonorPortal = () => {
     const [patients, setPatients] = useState([]);
@@ -120,9 +121,7 @@ const DonorPortal = () => {
             <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-[#e0e6e4]">
                 <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
                     <Link to="/" className="flex items-center gap-3" data-testid="logo-link">
-                        <div className="w-10 h-10 bg-[#0f392b] rounded-xl flex items-center justify-center">
-                            <Heart className="w-6 h-6 text-white" />
-                        </div>
+                        <img src={LOGO_URL} alt="HavenWelfare" className="w-10 h-10 object-contain" />
                         <span className="font-manrope text-xl font-bold text-[#0f392b]">HavenWelfare</span>
                     </Link>
                     <div className="flex items-center gap-4">
