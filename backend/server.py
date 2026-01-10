@@ -971,7 +971,7 @@ async def track_donation(transaction_id: str):
     }
 
 @api_router.put("/donations/{donation_id}/approve", response_model=DonationResponse)
-async def approve_donation(donation_id: str, approval: DonationApproval, admin: dict = Depends(get_admin_user)):
+async def approve_donation(donation_id: str, approval: DonationApproval, background_tasks: BackgroundTasks, admin: dict = Depends(get_admin_user)):
     donation = await db.donations.find_one({"id": donation_id}, {"_id": 0})
     if not donation:
         raise HTTPException(status_code=404, detail="Donation not found")
@@ -984,6 +984,18 @@ async def approve_donation(donation_id: str, approval: DonationApproval, admin: 
     
     await db.donations.update_one({"id": donation_id}, {"$set": update_data})
     await log_audit(admin['id'], admin['email'], f"DONATION_{approval.status.upper()}", f"Donation ID: {donation_id}")
+    
+    # Send email notification in background if donor email exists
+    if donation.get('donor_email'):
+        background_tasks.add_task(
+            send_donation_notification,
+            donation['donor_email'],
+            donation.get('donor_name'),
+            donation.get('patient_name', 'a patient'),
+            donation['amount'],
+            approval.status,
+            approval.admin_remarks
+        )
     
     updated = await db.donations.find_one({"id": donation_id}, {"_id": 0})
     return DonationResponse(**updated)
