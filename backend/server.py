@@ -638,13 +638,22 @@ async def get_all_users(status: Optional[str] = None, role: Optional[str] = None
     return [UserResponse(**u) for u in users]
 
 @api_router.put("/admin/users/{user_id}/status")
-async def update_user_status(user_id: str, request: UserStatusUpdate, admin: dict = Depends(get_admin_user)):
+async def update_user_status(user_id: str, request: UserStatusUpdate, background_tasks: BackgroundTasks, admin: dict = Depends(get_admin_user)):
     user = await db.users.find_one({"id": user_id}, {"_id": 0})
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     
     await db.users.update_one({"id": user_id}, {"$set": {"status": request.status}})
     await log_audit(admin['id'], admin['email'], "USER_STATUS_UPDATED", f"User {user['email']} status changed to {request.status}")
+    
+    # Send email notification in background
+    background_tasks.add_task(
+        send_user_status_notification, 
+        user['email'], 
+        user['name'], 
+        request.status, 
+        user['role']
+    )
     
     return {"message": f"User status updated to {request.status}"}
 
