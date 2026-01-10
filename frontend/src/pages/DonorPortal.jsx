@@ -111,6 +111,87 @@ const DonorPortal = () => {
         }
     };
 
+    const downloadReceipt = async (donationId) => {
+        try {
+            const response = await donationsAPI.getReceipt(donationId);
+            const receipt = response.data;
+            
+            // Generate printable receipt HTML
+            const receiptHTML = `
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Donation Receipt - ${receipt.receipt_number}</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; padding: 40px; max-width: 600px; margin: 0 auto; }
+        .header { text-align: center; border-bottom: 2px solid #0f392b; padding-bottom: 20px; margin-bottom: 30px; }
+        .logo { font-size: 24px; font-weight: bold; color: #0f392b; }
+        .receipt-number { color: #5c706a; margin-top: 10px; }
+        .section { margin-bottom: 20px; }
+        .label { color: #5c706a; font-size: 12px; text-transform: uppercase; }
+        .value { font-size: 16px; color: #0f392b; font-weight: 500; }
+        .amount { font-size: 32px; color: #d97757; font-weight: bold; text-align: center; margin: 30px 0; }
+        .footer { border-top: 1px solid #e0e6e4; padding-top: 20px; margin-top: 30px; text-align: center; color: #5c706a; font-size: 14px; }
+        .status { display: inline-block; background: #dcfce7; color: #166534; padding: 4px 12px; border-radius: 20px; font-weight: 500; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">HavenWelfare</div>
+        <div class="receipt-number">Receipt #${receipt.receipt_number}</div>
+    </div>
+    
+    <div class="amount">$${receipt.amount.toLocaleString()}</div>
+    
+    <div class="section">
+        <div class="label">Status</div>
+        <div class="value"><span class="status">${receipt.status}</span></div>
+    </div>
+    
+    <div class="section">
+        <div class="label">Transaction ID</div>
+        <div class="value">${receipt.transaction_id}</div>
+    </div>
+    
+    <div class="section">
+        <div class="label">Donor</div>
+        <div class="value">${receipt.donor_name}</div>
+    </div>
+    
+    <div class="section">
+        <div class="label">Patient Supported</div>
+        <div class="value">${receipt.patient_name}</div>
+    </div>
+    
+    <div class="section">
+        <div class="label">Donation Date</div>
+        <div class="value">${new Date(receipt.donation_date).toLocaleDateString()}</div>
+    </div>
+    
+    <div class="section">
+        <div class="label">Approval Date</div>
+        <div class="value">${new Date(receipt.approval_date).toLocaleDateString()}</div>
+    </div>
+    
+    <div class="footer">
+        <p>${receipt.organization_message}</p>
+        <p style="margin-top: 20px;">© ${new Date().getFullYear()} ${receipt.organization}</p>
+    </div>
+</body>
+</html>`;
+            
+            // Open in new window for printing/saving
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(receiptHTML);
+            printWindow.document.close();
+            printWindow.print();
+            
+            toast.success('Receipt opened for download');
+        } catch (error) {
+            toast.error(error.response?.data?.detail || 'Failed to download receipt');
+        }
+    };
+
     const filteredPatients = patients.filter(p =>
         p.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
