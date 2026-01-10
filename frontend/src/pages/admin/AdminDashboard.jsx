@@ -59,7 +59,7 @@ const AdminDashboard = () => {
         },
         { 
             title: 'Total Donations', 
-            value: `₹${analytics.total_donations.toLocaleString()}`, 
+            value: `$${analytics.total_donations.toLocaleString()}`, 
             icon: HandCoins, 
             color: 'bg-[#d97757]',
             change: '+24%'
@@ -146,7 +146,7 @@ const AdminDashboard = () => {
                                         </p>
                                     </div>
                                     <div className="text-right">
-                                        <p className="font-semibold text-[#0f392b]">₹{donation.amount.toLocaleString()}</p>
+                                        <p className="font-semibold text-[#0f392b]">${donation.amount.toLocaleString()}</p>
                                         <span className={`text-xs px-2 py-1 rounded-full ${
                                             donation.status === 'approved' ? 'bg-green-100 text-green-800' :
                                             donation.status === 'rejected' ? 'bg-red-100 text-red-800' :
