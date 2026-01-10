@@ -195,6 +195,7 @@ class TreatmentRequestResponse(BaseModel):
     id: str
     patient_id: str
     patient_name: Optional[str] = None
+    patient_profile_data: Optional[dict] = None  # Patient's medical history
     doctor_id: str
     doctor_name: Optional[str] = None
     rehab_center_id: str
