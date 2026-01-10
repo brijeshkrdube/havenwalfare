@@ -1127,7 +1127,27 @@ async def get_treatment_requests(status: Optional[str] = None, user: dict = Depe
         query['status'] = status
     
     requests = await db.treatment_requests.find(query, {"_id": 0}).sort("created_at", -1).to_list(1000)
-    return [TreatmentRequestResponse(**r) for r in requests]
+    
+    # Enrich with patient profile data for doctors and admins
+    enriched_requests = []
+    for req in requests:
+        req_data = dict(req)
+        if user['role'] in ['doctor', 'admin']:
+            # Fetch patient profile data
+            patient = await db.users.find_one(
+                {"id": req['patient_id']},
+                {"_id": 0, "password": 0}
+            )
+            if patient:
+                req_data['patient_profile_data'] = patient.get('profile_data', {})
+            else:
+                req_data['patient_profile_data'] = None
+        else:
+            req_data['patient_profile_data'] = None
+        
+        enriched_requests.append(TreatmentRequestResponse(**req_data))
+    
+    return enriched_requests
 
 @api_router.put("/treatment-requests/{request_id}/respond")
 async def respond_to_treatment_request(request_id: str, response: str, doctor: dict = Depends(get_doctor_user)):
