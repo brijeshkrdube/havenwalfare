@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { donationsAPI } from '../lib/api';
-import { HandCoins, User, ArrowRight, CreditCard, QrCode, Upload, Search, CheckCircle } from 'lucide-react';
+import { HandCoins, User, ArrowRight, CreditCard, QrCode, Upload, Search, CheckCircle, Download } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
