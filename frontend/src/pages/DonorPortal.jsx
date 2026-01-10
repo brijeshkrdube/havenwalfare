@@ -513,6 +513,15 @@ const DonorPortal = () => {
                                                     <p className="text-[#0f392b] mt-1">{trackingResult.admin_remarks}</p>
                                                 </div>
                                             )}
+                                            {trackingResult.status === 'approved' && trackingResult.donation_id && (
+                                                <Button
+                                                    onClick={() => downloadReceipt(trackingResult.donation_id)}
+                                                    className="w-full mt-4 bg-[#0f392b] hover:bg-[#0a2a1f] text-white"
+                                                    data-testid="download-receipt-btn"
+                                                >
+                                                    <Download className="w-4 h-4 mr-2" /> Download Receipt
+                                                </Button>
+                                            )}
                                         </div>
                                     )}
                                 </CardContent>
