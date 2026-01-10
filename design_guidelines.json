@@ -1,0 +1,184 @@
+{
+  "identity": {
+    "name": "HavenWelfare",
+    "persona": "E1: The Anti-AI Designer",
+    "tone": "Professional, Trustworthy, Organic, Human-Centric",
+    "archetype": "Organic & Earthy (Trust, Growth, Calm)",
+    "core_values": [
+      "Fusion over Imitation",
+      "Emotion First",
+      "Content is King",
+      "Negative Space",
+      "Contrast"
+    ]
+  },
+  "typography": {
+    "fonts": {
+      "heading": {
+        "family": "Manrope, sans-serif",
+        "url": "https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap",
+        "usage": "All Headings (h1-h6), Hero Text, Big Stats",
+        "weights": {
+          "default": "600",
+          "hero": "800",
+          "sub": "400"
+        }
+      },
+      "body": {
+        "family": "Inter, sans-serif",
+        "url": "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap",
+        "usage": "Paragraphs, UI Labels, Inputs, Data Tables",
+        "weights": {
+          "default": "400",
+          "bold": "500"
+        }
+      }
+    },
+    "rules": [
+      "Headings > 32px MUST use tracking-tight",
+      "Overlines MUST be Uppercase + tracking-widest + text-xs",
+      "Line height: leading-none for headers, leading-relaxed for body",
+      "Never use Inter for Headings"
+    ]
+  },
+  "colors": {
+    "palette": {
+      "primary": {
+        "name": "Deep Forest",
+        "hex": "#0f392b",
+        "tailwind": "bg-[#0f392b] text-white"
+      },
+      "secondary": {
+        "name": "Soft Clay",
+        "hex": "#f4f1ea",
+        "tailwind": "bg-[#f4f1ea] text-[#0f392b]"
+      },
+      "accent": {
+        "name": "Muted Terracotta",
+        "hex": "#d97757",
+        "tailwind": "bg-[#d97757] text-white"
+      },
+      "surface": {
+        "name": "Medical White",
+        "hex": "#ffffff",
+        "tailwind": "bg-white"
+      },
+      "text": {
+        "main": "#0f392b",
+        "muted": "#5c706a"
+      }
+    },
+    "gradients": {
+      "hero": "bg-gradient-to-br from-[#f4f1ea] via-white to-[#e0e6e4]",
+      "card_hover": "hover:bg-gradient-to-br hover:from-white hover:to-[#f4f1ea]"
+    },
+    "rules": [
+      "Never use pure black (#000000). Use #0f392b (Deep Forest) for text.",
+      "Avoid generic 'Hospital Blue'. Use Forest Green for trust.",
+      "Use Terracotta for primary CTAs (Buttons) to stand out from the green theme.",
+      "Dashboards should use a light gray/sand background (#f8f9fa) to reduce eye strain."
+    ]
+  },
+  "layout": {
+    "grid_system": {
+      "marketing": "Tetris Grid (grid-cols-12, gap-8)",
+      "dashboard": "Control Room Grid (grid-cols-4, gap-6)"
+    },
+    "spacing": {
+      "container_padding": "p-6 md:p-12 lg:p-24",
+      "section_gap": "gap-16 md:gap-32",
+      "internal_card_padding": "p-6 or p-8"
+    },
+    "radius": {
+      "default": "rounded-xl",
+      "button": "rounded-full",
+      "card": "rounded-2xl"
+    }
+  },
+  "components": {
+    "buttons": {
+      "primary": "bg-[#d97757] hover:bg-[#c26649] text-white rounded-full px-8 py-6 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300",
+      "secondary": "bg-transparent border-2 border-[#0f392b] text-[#0f392b] rounded-full px-8 py-6 text-lg font-semibold hover:bg-[#0f392b] hover:text-white transition-all duration-300",
+      "ghost": "text-[#0f392b] hover:bg-[#f4f1ea] rounded-lg px-4 py-2"
+    },
+    "cards": {
+      "style": "bg-white border border-[#e0e6e4] shadow-sm hover:shadow-md transition-all duration-300 rounded-2xl",
+      "glass": "bg-white/70 backdrop-blur-xl border border-white/40 shadow-sm"
+    },
+    "inputs": {
+      "style": "bg-[#f8f9fa] border-transparent focus:border-[#0f392b] focus:ring-2 focus:ring-[#0f392b]/20 rounded-lg h-12 px-4"
+    },
+    "overrides": [
+      "Shadcn Button: Change default radius to rounded-full",
+      "Shadcn Card: Increase padding to p-6 or p-8",
+      "Shadcn Dialog: Use backdrop-blur-sm for overlay"
+    ]
+  },
+  "assets": {
+    "images": {
+      "hero_doctor": {
+        "url": "https://images.unsplash.com/photo-1581056771107-24ca5f033842",
+        "alt": "Doctor consulting patient with tablet",
+        "usage": "Hero section, Doctor Dashboard Welcome"
+      },
+      "patient_interaction": {
+        "url": "https://images.pexels.com/photos/8376277/pexels-photo-8376277.jpeg",
+        "alt": "Friendly doctor patient interaction",
+        "usage": "About Us, Patient Portal"
+      },
+      "rehab_center_interior": {
+        "url": "https://images.unsplash.com/photo-1565262353342-6e919eab5b58",
+        "alt": "Modern clean rehab center interior",
+        "usage": "Rehab Centers Listing, Facility Tour"
+      },
+      "rehab_lobby": {
+        "url": "https://images.pexels.com/photos/4047275/pexels-photo-4047275.jpeg",
+        "alt": "Welcoming waiting area",
+        "usage": "Contact Page, Center Details"
+      },
+      "support_group": {
+        "url": "https://images.pexels.com/photos/3184432/pexels-photo-3184432.jpeg",
+        "alt": "Diverse support group meeting",
+        "usage": "Community Section, Success Stories"
+      }
+    },
+    "icons": {
+      "library": "lucide-react",
+      "style": "Stroke width 1.5px, rounded corners"
+    }
+  },
+  "motion": {
+    "library": "framer-motion",
+    "defaults": {
+      "duration": 0.4,
+      "ease": "easeOut"
+    },
+    "animations": {
+      "fade_up": {
+        "initial": { "opacity": 0, "y": 20 },
+        "animate": { "opacity": 1, "y": 0 },
+        "transition": { "duration": 0.5 }
+      },
+      "stagger_container": {
+        "hidden": { "opacity": 0 },
+        "show": {
+          "opacity": 1,
+          "transition": {
+            "staggerChildren": 0.1
+          }
+        }
+      }
+    }
+  },
+  "universal_guidelines": [
+    "DO NOT use gradients for text.",
+    "DO NOT use 'Inter' for headings.",
+    "DO NOT center text by default. Use left alignment for readability.",
+    "Use 2x more whitespace than you think is necessary.",
+    "All interactive elements MUST have data-testid attributes.",
+    "Use 'sonner' for toasts.",
+    "Use 'lucide-react' for icons.",
+    "Ensure all text has contrast ratio > 4.5:1 against background."
+  ],
+  "instructions_to_main_agent": "You are building HavenWelfare. Follow these guidelines strictly. Use the provided image URLs. Do not ask for clarification. If a component is missing, build it using the 'Soft Clay' and 'Deep Forest' aesthetic. Prioritize the 'Tetris Grid' for the landing page and 'Control Room Grid' for dashboards."
+}
