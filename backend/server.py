@@ -640,7 +640,7 @@ async def update_profile(request: UpdateProfileRequest, user: dict = Depends(get
 
 # ==================== ADMIN ENDPOINTS ====================
 
-@api_router.get("/admin/users", response_model=List[UserResponse])
+@api_router.get("/admin/users", response_model=List[UserWithHistoryResponse])
 async def get_all_users(status: Optional[str] = None, role: Optional[str] = None, admin: dict = Depends(get_admin_user)):
     query = {}
     if status:
@@ -649,7 +649,30 @@ async def get_all_users(status: Optional[str] = None, role: Optional[str] = None
         query['role'] = role
     
     users = await db.users.find(query, {"_id": 0, "password": 0}).to_list(1000)
-    return [UserResponse(**u) for u in users]
+    
+    # Enrich patient users with donation history
+    enriched_users = []
+    for user in users:
+        user_data = dict(user)
+        if user['role'] == 'patient':
+            # Fetch donation history for this patient
+            donations = await db.donations.find(
+                {"patient_id": user['id']},
+                {"_id": 0}
+            ).sort("created_at", -1).to_list(100)
+            
+            user_data['donation_history'] = donations
+            
+            # Calculate total approved donations
+            total = sum(d['amount'] for d in donations if d.get('status') == 'approved')
+            user_data['total_donations'] = total
+        else:
+            user_data['donation_history'] = None
+            user_data['total_donations'] = None
+            
+        enriched_users.append(UserWithHistoryResponse(**user_data))
+    
+    return enriched_users
 
 @api_router.put("/admin/users/{user_id}/status")
 async def update_user_status(user_id: str, request: UserStatusUpdate, background_tasks: BackgroundTasks, admin: dict = Depends(get_admin_user)):
