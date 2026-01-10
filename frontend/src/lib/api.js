@@ -91,6 +91,7 @@ export const donationsAPI = {
     getById: (id) => api.get(`/donations/${id}`),
     track: (transactionId) => api.get(`/donations/track/${transactionId}`),
     approve: (id, status, admin_remarks) => api.put(`/donations/${id}/approve`, { status, admin_remarks }),
+    getReceipt: (id) => api.get(`/donations/${id}/receipt`),
 };
 
 // Treatment Requests APIs
