@@ -718,6 +718,62 @@ async def update_user_status(user_id: str, request: UserStatusUpdate, background
     
     return {"message": f"User status updated to {request.status}"}
 
+@api_router.put("/admin/profile")
+async def update_admin_profile(request: AdminUpdateProfileRequest, admin: dict = Depends(get_admin_user)):
+    """Admin can update their own email and password"""
+    update_data = {}
+    
+    # If changing password, verify current password
+    if request.new_password:
+        if not request.current_password:
+            raise HTTPException(status_code=400, detail="Current password is required to change password")
+        
+        # Get admin with password
+        admin_user = await db.users.find_one({"id": admin['id']})
+        if not bcrypt.checkpw(request.current_password.encode(), admin_user['password'].encode()):
+            raise HTTPException(status_code=400, detail="Current password is incorrect")
+        
+        # Hash new password
+        hashed_password = bcrypt.hashpw(request.new_password.encode(), bcrypt.gensalt()).decode()
+        update_data['password'] = hashed_password
+    
+    # Update email if provided
+    if request.email and request.email != admin['email']:
+        # Check if email is already taken
+        existing = await db.users.find_one({"email": request.email, "id": {"$ne": admin['id']}})
+        if existing:
+            raise HTTPException(status_code=400, detail="Email is already in use")
+        update_data['email'] = request.email
+    
+    # Update name if provided
+    if request.name:
+        update_data['name'] = request.name
+    
+    if not update_data:
+        raise HTTPException(status_code=400, detail="No updates provided")
+    
+    await db.users.update_one({"id": admin['id']}, {"$set": update_data})
+    await log_audit(admin['id'], admin['email'], "ADMIN_PROFILE_UPDATED", f"Admin updated their profile")
+    
+    # Return updated admin info
+    updated_admin = await db.users.find_one({"id": admin['id']}, {"_id": 0, "password": 0})
+    return {"message": "Profile updated successfully", "user": updated_admin}
+
+@api_router.put("/admin/users/{user_id}/password")
+async def admin_change_user_password(user_id: str, request: AdminChangeUserPasswordRequest, admin: dict = Depends(get_admin_user)):
+    """Admin can change any user's password"""
+    user = await db.users.find_one({"id": user_id}, {"_id": 0})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Hash new password
+    hashed_password = bcrypt.hashpw(request.new_password.encode(), bcrypt.gensalt()).decode()
+    
+    await db.users.update_one({"id": user_id}, {"$set": {"password": hashed_password}})
+    await log_audit(admin['id'], admin['email'], "USER_PASSWORD_CHANGED", f"Admin changed password for user {user['email']}")
+    
+    return {"message": f"Password changed successfully for {user['email']}"}
+
 @api_router.get("/admin/analytics", response_model=AnalyticsResponse)
 async def get_analytics(admin: dict = Depends(get_admin_user)):
     total_users = await db.users.count_documents({})
