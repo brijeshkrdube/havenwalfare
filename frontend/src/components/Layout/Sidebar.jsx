@@ -36,6 +36,7 @@ const Sidebar = () => {
                     { icon: CreditCard, label: 'Payment Settings', path: '/admin/payment-settings' },
                     { icon: Mail, label: 'SMTP Settings', path: '/admin/smtp-settings' },
                     { icon: Activity, label: 'Audit Logs', path: '/admin/audit-logs' },
+                    { icon: User, label: 'My Profile', path: '/admin/profile' },
                 ];
             case 'doctor':
                 return [
