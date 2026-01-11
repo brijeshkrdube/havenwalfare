@@ -59,6 +59,7 @@ function App() {
           <Route path="/about" element={<AboutUs />} />
           <Route path="/contact" element={<ContactUs />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/events/:id" element={<EventDetail />} />
 
           {/* Admin Routes */}
           <Route path="/admin" element={<DashboardLayout allowedRoles={['admin']} />}>
@@ -69,9 +70,10 @@ function App() {
             <Route path="donations" element={<DonationsManagement />} />
             <Route path="payment-settings" element={<PaymentSettings />} />
             <Route path="smtp-settings" element={<SMTPSettings />} />
+            <Route path="site-settings" element={<SiteSettings />} />
+            <Route path="events" element={<EventsManagement />} />
             <Route path="audit-logs" element={<AuditLogs />} />
             <Route path="profile" element={<AdminProfile />} />
-            <Route path="site-settings" element={<SiteSettings />} />
           </Route>
 
           {/* Doctor Routes */}
