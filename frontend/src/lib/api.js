@@ -63,6 +63,13 @@ export const adminAPI = {
     },
     getSMTPSettings: () => api.get('/admin/smtp-settings'),
     updateSMTPSettings: (data) => api.put('/admin/smtp-settings', data),
+    getSiteSettings: () => api.get('/site-settings'),
+    updateSiteSettings: (data) => api.put('/admin/site-settings', data),
+};
+
+// Public APIs
+export const publicAPI = {
+    getSiteSettings: () => api.get('/site-settings'),
 };
 
 // Rehab Centers APIs
