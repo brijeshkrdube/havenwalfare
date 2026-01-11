@@ -87,6 +87,41 @@ const UserManagement = () => {
         }
     };
 
+    const openPasswordDialog = (user) => {
+        setSelectedUser(user);
+        setNewPassword('');
+        setConfirmPassword('');
+        setShowPasswordDialog(true);
+    };
+
+    const handleChangePassword = async () => {
+        if (!newPassword || !confirmPassword) {
+            toast.error('Please fill in all fields');
+            return;
+        }
+        if (newPassword !== confirmPassword) {
+            toast.error('Passwords do not match');
+            return;
+        }
+        if (newPassword.length < 6) {
+            toast.error('Password must be at least 6 characters');
+            return;
+        }
+
+        setActionLoading(true);
+        try {
+            await adminAPI.changeUserPassword(selectedUser.id, newPassword);
+            toast.success(`Password changed for ${selectedUser.email}`);
+            setShowPasswordDialog(false);
+            setNewPassword('');
+            setConfirmPassword('');
+        } catch (error) {
+            toast.error(error.response?.data?.detail || 'Failed to change password');
+        } finally {
+            setActionLoading(false);
+        }
+    };
+
     const getAddictionTypeName = (id) => {
         const type = addictionTypes.find(t => t.id === id);
         return type?.name || 'Not specified';
