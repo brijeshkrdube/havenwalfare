@@ -111,6 +111,17 @@ class ChangePasswordRequest(BaseModel):
     current_password: str
     new_password: str
 
+class AdminUpdateProfileRequest(BaseModel):
+    """Admin can update their own email and password"""
+    email: Optional[EmailStr] = None
+    name: Optional[str] = None
+    current_password: Optional[str] = None
+    new_password: Optional[str] = None
+
+class AdminChangeUserPasswordRequest(BaseModel):
+    """Admin can change any user's password"""
+    new_password: str
+
 class UpdateProfileRequest(BaseModel):
     name: Optional[str] = None
     phone: Optional[str] = None
