@@ -34,6 +34,7 @@ const Sidebar = () => {
                     { icon: Building2, label: 'Rehab Centers', path: '/admin/rehab-centers' },
                     { icon: Heart, label: 'Addiction Types', path: '/admin/addiction-types' },
                     { icon: HandCoins, label: 'Donations', path: '/admin/donations' },
+                    { icon: Calendar, label: 'Events', path: '/admin/events' },
                     { icon: CreditCard, label: 'Payment Settings', path: '/admin/payment-settings' },
                     { icon: Mail, label: 'SMTP Settings', path: '/admin/smtp-settings' },
                     { icon: Globe, label: 'Site Settings', path: '/admin/site-settings' },
