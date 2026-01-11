@@ -11,6 +11,9 @@ import Register from "./pages/auth/Register";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import ResetPassword from "./pages/auth/ResetPassword";
 import DonorPortal from "./pages/DonorPortal";
+import AboutUs from "./pages/AboutUs";
+import ContactUs from "./pages/ContactUs";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
 
 // Layout
 import DashboardLayout from "./components/Layout/DashboardLayout";
@@ -25,6 +28,7 @@ import PaymentSettings from "./pages/admin/PaymentSettings";
 import SMTPSettings from "./pages/admin/SMTPSettings";
 import AuditLogs from "./pages/admin/AuditLogs";
 import AdminProfile from "./pages/admin/AdminProfile";
+import SiteSettings from "./pages/admin/SiteSettings";
 
 // Doctor Pages
 import DoctorDashboard from "./pages/doctor/DoctorDashboard";
