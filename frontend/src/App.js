@@ -24,6 +24,7 @@ import DonationsManagement from "./pages/admin/DonationsManagement";
 import PaymentSettings from "./pages/admin/PaymentSettings";
 import SMTPSettings from "./pages/admin/SMTPSettings";
 import AuditLogs from "./pages/admin/AuditLogs";
+import AdminProfile from "./pages/admin/AdminProfile";
 
 // Doctor Pages
 import DoctorDashboard from "./pages/doctor/DoctorDashboard";
