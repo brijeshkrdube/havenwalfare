@@ -15,7 +15,8 @@ import {
     ClipboardList,
     CreditCard,
     Mail,
-    Activity
+    Activity,
+    Globe
 } from 'lucide-react';
 
 const LOGO_URL = "https://customer-assets.emergentagent.com/job_3463593f-4cba-425e-a575-89c0d925427c/artifacts/n1f21t65_unnamed-removebg-preview.png";
