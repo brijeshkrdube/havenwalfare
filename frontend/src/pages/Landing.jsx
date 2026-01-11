@@ -152,6 +152,111 @@ const Landing = () => {
                 </div>
             </section>
 
+            {/* Events Slider Section */}
+            {events.length > 0 && (
+                <section className="py-16 bg-white">
+                    <div className="max-w-7xl mx-auto px-6">
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.5 }}
+                            viewport={{ once: true }}
+                            className="text-center mb-12"
+                        >
+                            <span className="inline-block bg-[#d97757]/10 rounded-full text-sm font-medium text-[#d97757] tracking-widest uppercase px-4 py-2 mb-4">
+                                Latest Events
+                            </span>
+                            <h2 className="font-manrope text-3xl sm:text-4xl font-bold text-[#0f392b]">
+                                Upcoming Events & News
+                            </h2>
+                        </motion.div>
+
+                        {/* Slider */}
+                        <div className="relative">
+                            <div className="overflow-hidden rounded-2xl">
+                                <div 
+                                    className="flex transition-transform duration-500 ease-in-out"
+                                    style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+                                >
+                                    {events.map((event) => (
+                                        <div key={event.id} className="w-full flex-shrink-0">
+                                            <Link to={`/events/${event.id}`} className="block">
+                                                <div className="relative h-64 sm:h-96 bg-[#0f392b] rounded-2xl overflow-hidden group">
+                                                    {event.image_url ? (
+                                                        <img 
+                                                            src={event.image_url} 
+                                                            alt={event.title}
+                                                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                                        />
+                                                    ) : (
+                                                        <div className="w-full h-full bg-gradient-to-br from-[#0f392b] to-[#1a5c46]"></div>
+                                                    )}
+                                                    {/* Overlay */}
+                                                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
+                                                    {/* Content */}
+                                                    <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8">
+                                                        {event.event_date && (
+                                                            <span className="inline-flex items-center gap-1 bg-[#d97757] text-white px-3 py-1 rounded-full text-sm mb-3">
+                                                                <Calendar className="w-3 h-3" />
+                                                                {new Date(event.event_date).toLocaleDateString()}
+                                                            </span>
+                                                        )}
+                                                        <h3 className="font-manrope text-xl sm:text-2xl font-bold text-white mb-2">
+                                                            {event.title}
+                                                        </h3>
+                                                        <p className="text-white/80 text-sm sm:text-base line-clamp-2">
+                                                            {event.description}
+                                                        </p>
+                                                        <span className="inline-flex items-center gap-1 text-[#d97757] mt-4 font-medium group-hover:gap-2 transition-all">
+                                                            Read More <ArrowRight className="w-4 h-4" />
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </Link>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Navigation Arrows */}
+                            {events.length > 1 && (
+                                <>
+                                    <button
+                                        onClick={prevSlide}
+                                        className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-3 rounded-full shadow-lg transition-all"
+                                    >
+                                        <ChevronLeft className="w-5 h-5 text-[#0f392b]" />
+                                    </button>
+                                    <button
+                                        onClick={nextSlide}
+                                        className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-3 rounded-full shadow-lg transition-all"
+                                    >
+                                        <ChevronRight className="w-5 h-5 text-[#0f392b]" />
+                                    </button>
+                                </>
+                            )}
+
+                            {/* Dots */}
+                            {events.length > 1 && (
+                                <div className="flex justify-center gap-2 mt-6">
+                                    {events.map((_, index) => (
+                                        <button
+                                            key={index}
+                                            onClick={() => setCurrentSlide(index)}
+                                            className={`w-3 h-3 rounded-full transition-all ${
+                                                index === currentSlide 
+                                                    ? 'bg-[#d97757] w-8' 
+                                                    : 'bg-[#e0e6e4] hover:bg-[#d97757]/50'
+                                            }`}
+                                        />
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </section>
+            )}
+
             {/* Stats Section */}
             <section className="py-16 bg-[#0f392b]">
                 <div className="max-w-7xl mx-auto px-6">
