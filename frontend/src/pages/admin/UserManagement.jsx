@@ -324,6 +324,16 @@ const UserManagement = () => {
                                                                     <UserCheck className="w-4 h-4" />
                                                                 </Button>
                                                             )}
+                                                            <Button
+                                                                size="sm"
+                                                                variant="outline"
+                                                                onClick={() => openPasswordDialog(user)}
+                                                                className="border-[#d97757] text-[#d97757] hover:bg-[#d97757]/10"
+                                                                data-testid={`change-password-${user.id}`}
+                                                                title="Change Password"
+                                                            >
+                                                                <Key className="w-4 h-4" />
+                                                            </Button>
                                                         </>
                                                     )}
                                                 </div>
