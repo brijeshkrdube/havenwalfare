@@ -588,6 +588,79 @@ const UserManagement = () => {
                 </DialogContent>
             </Dialog>
         </div>
+
+            {/* Change Password Dialog */}
+            <Dialog open={showPasswordDialog} onOpenChange={setShowPasswordDialog}>
+                <DialogContent className="sm:max-w-[425px]">
+                    <DialogHeader>
+                        <DialogTitle className="font-manrope text-xl text-[#0f392b] flex items-center gap-2">
+                            <Key className="w-5 h-5 text-[#d97757]" />
+                            Change Password
+                        </DialogTitle>
+                    </DialogHeader>
+                    {selectedUser && (
+                        <div className="space-y-4 pt-4">
+                            <div className="p-3 bg-[#f4f1ea] rounded-lg">
+                                <p className="text-sm text-[#5c706a]">Changing password for:</p>
+                                <p className="font-semibold text-[#0f392b]">{selectedUser.name}</p>
+                                <p className="text-sm text-[#5c706a]">{selectedUser.email}</p>
+                            </div>
+
+                            <div className="space-y-2">
+                                <Label htmlFor="new-password">New Password</Label>
+                                <Input
+                                    id="new-password"
+                                    type="password"
+                                    value={newPassword}
+                                    onChange={(e) => setNewPassword(e.target.value)}
+                                    placeholder="Enter new password"
+                                    className="border-[#e0e6e4] focus:border-[#d97757]"
+                                />
+                            </div>
+
+                            <div className="space-y-2">
+                                <Label htmlFor="confirm-password">Confirm Password</Label>
+                                <Input
+                                    id="confirm-password"
+                                    type="password"
+                                    value={confirmPassword}
+                                    onChange={(e) => setConfirmPassword(e.target.value)}
+                                    placeholder="Confirm new password"
+                                    className="border-[#e0e6e4] focus:border-[#d97757]"
+                                />
+                            </div>
+
+                            <div className="flex justify-end gap-3 pt-4">
+                                <Button
+                                    variant="outline"
+                                    onClick={() => setShowPasswordDialog(false)}
+                                    className="border-[#e0e6e4]"
+                                >
+                                    Cancel
+                                </Button>
+                                <Button
+                                    onClick={handleChangePassword}
+                                    disabled={actionLoading || !newPassword || !confirmPassword}
+                                    className="bg-[#d97757] hover:bg-[#c26649] text-white"
+                                >
+                                    {actionLoading ? (
+                                        <span className="flex items-center gap-2">
+                                            <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                            Updating...
+                                        </span>
+                                    ) : (
+                                        <span className="flex items-center gap-2">
+                                            <Lock className="w-4 h-4" />
+                                            Change Password
+                                        </span>
+                                    )}
+                                </Button>
+                            </div>
+                        </div>
+                    )}
+                </DialogContent>
+            </Dialog>
+        </div>
     );
 };
 
