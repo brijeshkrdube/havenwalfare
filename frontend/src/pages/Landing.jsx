@@ -1,12 +1,46 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Shield, Users, Building2, HandCoins, ArrowRight, CheckCircle } from 'lucide-react';
+import { Shield, Users, Building2, HandCoins, ArrowRight, CheckCircle, ChevronLeft, ChevronRight, Calendar } from 'lucide-react';
 import { Button } from '../components/ui/button';
+import { publicAPI } from '../lib/api';
 
 const LOGO_URL = "https://customer-assets.emergentagent.com/job_3463593f-4cba-425e-a575-89c0d925427c/artifacts/n1f21t65_unnamed-removebg-preview.png";
 
 const Landing = () => {
+    const [events, setEvents] = useState([]);
+    const [currentSlide, setCurrentSlide] = useState(0);
+
+    useEffect(() => {
+        const fetchEvents = async () => {
+            try {
+                const response = await publicAPI.getEvents();
+                setEvents(response.data);
+            } catch (error) {
+                console.error('Failed to load events');
+            }
+        };
+        fetchEvents();
+    }, []);
+
+    // Auto-slide every 5 seconds
+    useEffect(() => {
+        if (events.length > 1) {
+            const interval = setInterval(() => {
+                setCurrentSlide((prev) => (prev + 1) % events.length);
+            }, 5000);
+            return () => clearInterval(interval);
+        }
+    }, [events.length]);
+
+    const nextSlide = () => {
+        setCurrentSlide((prev) => (prev + 1) % events.length);
+    };
+
+    const prevSlide = () => {
+        setCurrentSlide((prev) => (prev - 1 + events.length) % events.length);
+    };
+
     const fadeUp = {
         initial: { opacity: 0, y: 20 },
         animate: { opacity: 1, y: 0 },
