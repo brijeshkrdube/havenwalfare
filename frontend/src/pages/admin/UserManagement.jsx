@@ -587,7 +587,6 @@ const UserManagement = () => {
                     )}
                 </DialogContent>
             </Dialog>
-        </div>
 
             {/* Change Password Dialog */}
             <Dialog open={showPasswordDialog} onOpenChange={setShowPasswordDialog}>
