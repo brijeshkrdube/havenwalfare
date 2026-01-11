@@ -14,6 +14,7 @@ import DonorPortal from "./pages/DonorPortal";
 import AboutUs from "./pages/AboutUs";
 import ContactUs from "./pages/ContactUs";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
+import EventDetail from "./pages/EventDetail";
 
 // Layout
 import DashboardLayout from "./components/Layout/DashboardLayout";
@@ -29,6 +30,7 @@ import SMTPSettings from "./pages/admin/SMTPSettings";
 import AuditLogs from "./pages/admin/AuditLogs";
 import AdminProfile from "./pages/admin/AdminProfile";
 import SiteSettings from "./pages/admin/SiteSettings";
+import EventsManagement from "./pages/admin/EventsManagement";
 
 // Doctor Pages
 import DoctorDashboard from "./pages/doctor/DoctorDashboard";
