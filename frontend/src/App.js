@@ -61,6 +61,7 @@ function App() {
             <Route path="payment-settings" element={<PaymentSettings />} />
             <Route path="smtp-settings" element={<SMTPSettings />} />
             <Route path="audit-logs" element={<AuditLogs />} />
+            <Route path="profile" element={<AdminProfile />} />
           </Route>
 
           {/* Doctor Routes */}
