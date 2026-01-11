@@ -154,6 +154,31 @@ class RehabCenterResponse(BaseModel):
     status: str  # pending, approved, rejected
     created_at: str
 
+# Event Models
+class EventCreate(BaseModel):
+    title: str
+    description: str
+    image_url: Optional[str] = None
+    event_date: Optional[str] = None
+    is_active: Optional[bool] = True
+
+class EventUpdate(BaseModel):
+    title: Optional[str] = None
+    description: Optional[str] = None
+    image_url: Optional[str] = None
+    event_date: Optional[str] = None
+    is_active: Optional[bool] = None
+
+class EventResponse(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str
+    title: str
+    description: str
+    image_url: Optional[str] = None
+    event_date: Optional[str] = None
+    is_active: bool
+    created_at: str
+
 class AddictionTypeCreate(BaseModel):
     name: str
     description: Optional[str] = None
