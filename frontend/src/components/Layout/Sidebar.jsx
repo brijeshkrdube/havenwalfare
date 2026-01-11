@@ -35,6 +35,7 @@ const Sidebar = () => {
                     { icon: HandCoins, label: 'Donations', path: '/admin/donations' },
                     { icon: CreditCard, label: 'Payment Settings', path: '/admin/payment-settings' },
                     { icon: Mail, label: 'SMTP Settings', path: '/admin/smtp-settings' },
+                    { icon: Globe, label: 'Site Settings', path: '/admin/site-settings' },
                     { icon: Activity, label: 'Audit Logs', path: '/admin/audit-logs' },
                     { icon: User, label: 'My Profile', path: '/admin/profile' },
                 ];
