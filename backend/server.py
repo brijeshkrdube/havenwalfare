@@ -844,6 +844,109 @@ async def update_site_settings(request: SiteSettingsUpdate, admin: dict = Depend
     
     return {"message": "Site settings updated successfully"}
 
+# ==================== EVENT ENDPOINTS ====================
+
+@api_router.get("/events", response_model=List[EventResponse])
+async def get_events(active_only: bool = True):
+    """Get all events (public)"""
+    query = {"is_active": True} if active_only else {}
+    events = await db.events.find(query, {"_id": 0}).sort("created_at", -1).to_list(100)
+    return [EventResponse(**e) for e in events]
+
+@api_router.get("/events/{event_id}", response_model=EventResponse)
+async def get_event(event_id: str):
+    """Get single event by ID"""
+    event = await db.events.find_one({"id": event_id}, {"_id": 0})
+    if not event:
+        raise HTTPException(status_code=404, detail="Event not found")
+    return EventResponse(**event)
+
+@api_router.get("/admin/events", response_model=List[EventResponse])
+async def get_admin_events(admin: dict = Depends(get_admin_user)):
+    """Get all events for admin (including inactive)"""
+    events = await db.events.find({}, {"_id": 0}).sort("created_at", -1).to_list(100)
+    return [EventResponse(**e) for e in events]
+
+@api_router.post("/admin/events", response_model=EventResponse)
+async def create_event(event: EventCreate, admin: dict = Depends(get_admin_user)):
+    """Create new event"""
+    event_data = {
+        "id": str(uuid.uuid4()),
+        "title": event.title,
+        "description": event.description,
+        "image_url": event.image_url,
+        "event_date": event.event_date,
+        "is_active": event.is_active if event.is_active is not None else True,
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    
+    await db.events.insert_one(event_data)
+    await log_audit(admin['id'], admin['email'], "EVENT_CREATED", f"Created event: {event.title}")
+    
+    return EventResponse(**event_data)
+
+@api_router.put("/admin/events/{event_id}", response_model=EventResponse)
+async def update_event(event_id: str, event: EventUpdate, admin: dict = Depends(get_admin_user)):
+    """Update event"""
+    existing = await db.events.find_one({"id": event_id}, {"_id": 0})
+    if not existing:
+        raise HTTPException(status_code=404, detail="Event not found")
+    
+    update_data = {}
+    if event.title is not None:
+        update_data['title'] = event.title
+    if event.description is not None:
+        update_data['description'] = event.description
+    if event.image_url is not None:
+        update_data['image_url'] = event.image_url
+    if event.event_date is not None:
+        update_data['event_date'] = event.event_date
+    if event.is_active is not None:
+        update_data['is_active'] = event.is_active
+    
+    if update_data:
+        await db.events.update_one({"id": event_id}, {"$set": update_data})
+    
+    await log_audit(admin['id'], admin['email'], "EVENT_UPDATED", f"Updated event: {event_id}")
+    
+    updated = await db.events.find_one({"id": event_id}, {"_id": 0})
+    return EventResponse(**updated)
+
+@api_router.delete("/admin/events/{event_id}")
+async def delete_event(event_id: str, admin: dict = Depends(get_admin_user)):
+    """Delete event"""
+    existing = await db.events.find_one({"id": event_id}, {"_id": 0})
+    if not existing:
+        raise HTTPException(status_code=404, detail="Event not found")
+    
+    await db.events.delete_one({"id": event_id})
+    await log_audit(admin['id'], admin['email'], "EVENT_DELETED", f"Deleted event: {existing['title']}")
+    
+    return {"message": "Event deleted successfully"}
+
+@api_router.post("/admin/events/{event_id}/upload-image")
+async def upload_event_image(event_id: str, file: UploadFile = File(...), admin: dict = Depends(get_admin_user)):
+    """Upload event image"""
+    existing = await db.events.find_one({"id": event_id}, {"_id": 0})
+    if not existing:
+        raise HTTPException(status_code=404, detail="Event not found")
+    
+    # Save file
+    file_ext = file.filename.split('.')[-1] if '.' in file.filename else 'jpg'
+    filename = f"event_{event_id}.{file_ext}"
+    file_path = f"uploads/{filename}"
+    
+    os.makedirs("uploads", exist_ok=True)
+    with open(file_path, "wb") as f:
+        content = await file.read()
+        f.write(content)
+    
+    # Update event with image URL
+    image_url = f"/uploads/{filename}"
+    await db.events.update_one({"id": event_id}, {"$set": {"image_url": image_url}})
+    
+    return {"message": "Image uploaded successfully", "image_url": image_url}
+
 @api_router.get("/admin/analytics", response_model=AnalyticsResponse)
 async def get_analytics(admin: dict = Depends(get_admin_user)):
     total_users = await db.users.count_documents({})
