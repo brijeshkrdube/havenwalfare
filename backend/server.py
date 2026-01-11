@@ -774,6 +774,51 @@ async def admin_change_user_password(user_id: str, request: AdminChangeUserPassw
     
     return {"message": f"Password changed successfully for {user['email']}"}
 
+# ==================== SITE SETTINGS ENDPOINTS ====================
+
+class SiteSettingsUpdate(BaseModel):
+    about_us: Optional[str] = None
+    contact_address: Optional[str] = None
+    contact_email: Optional[str] = None
+    contact_phone: Optional[str] = None
+
+@api_router.get("/site-settings")
+async def get_site_settings():
+    """Get public site settings (about us, contact info)"""
+    settings = await db.admin_settings.find_one({"type": "site_settings"}, {"_id": 0})
+    if not settings:
+        return {
+            "about_us": "Welcome to HavenWelfare. We are dedicated to supporting rehabilitation and recovery programs.",
+            "contact_address": "",
+            "contact_email": "",
+            "contact_phone": ""
+        }
+    return settings
+
+@api_router.put("/admin/site-settings")
+async def update_site_settings(request: SiteSettingsUpdate, admin: dict = Depends(get_admin_user)):
+    """Admin can update site settings"""
+    update_data = {"type": "site_settings"}
+    
+    if request.about_us is not None:
+        update_data['about_us'] = request.about_us
+    if request.contact_address is not None:
+        update_data['contact_address'] = request.contact_address
+    if request.contact_email is not None:
+        update_data['contact_email'] = request.contact_email
+    if request.contact_phone is not None:
+        update_data['contact_phone'] = request.contact_phone
+    
+    await db.admin_settings.update_one(
+        {"type": "site_settings"},
+        {"$set": update_data},
+        upsert=True
+    )
+    
+    await log_audit(admin['id'], admin['email'], "SITE_SETTINGS_UPDATED", "Admin updated site settings")
+    
+    return {"message": "Site settings updated successfully"}
+
 @api_router.get("/admin/analytics", response_model=AnalyticsResponse)
 async def get_analytics(admin: dict = Depends(get_admin_user)):
     total_users = await db.users.count_documents({})
