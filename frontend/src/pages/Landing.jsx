@@ -47,25 +47,26 @@ const Landing = () => {
         <div className="min-h-screen bg-gradient-to-br from-[#f4f1ea] via-white to-[#e0e6e4]">
             {/* Navigation */}
             <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-lg border-b border-[#e0e6e4]">
-                <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-                    <Link to="/" className="flex items-center gap-3" data-testid="logo-link">
-                        <img src={LOGO_URL} alt="HavenWelfare" className="w-10 h-10 object-contain" />
-                        <span className="font-manrope text-xl font-bold text-[#0f392b]">HavenWelfare</span>
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between">
+                    <Link to="/" className="flex items-center gap-2 sm:gap-3" data-testid="logo-link">
+                        <img src={LOGO_URL} alt="HavenWelfare" className="w-8 h-8 sm:w-10 sm:h-10 object-contain" />
+                        <span className="font-manrope text-lg sm:text-xl font-bold text-[#0f392b] hidden xs:inline">HavenWelfare</span>
                     </Link>
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-2 sm:gap-4">
                         <Link to="/donate" data-testid="donate-link">
-                            <Button variant="ghost" className="text-[#0f392b] hover:bg-[#f4f1ea]">
+                            <Button variant="ghost" className="text-[#0f392b] hover:bg-[#f4f1ea] text-sm sm:text-base px-2 sm:px-4">
                                 Donate
                             </Button>
                         </Link>
-                        <Link to="/login" data-testid="login-link">
-                            <Button variant="outline" className="border-[#0f392b] text-[#0f392b] hover:bg-[#0f392b] hover:text-white rounded-full px-6">
+                        <Link to="/login" data-testid="login-link" className="hidden sm:block">
+                            <Button variant="outline" className="border-[#0f392b] text-[#0f392b] hover:bg-[#0f392b] hover:text-white rounded-full px-4 sm:px-6">
                                 Login
                             </Button>
                         </Link>
                         <Link to="/register" data-testid="register-link">
-                            <Button className="bg-[#d97757] hover:bg-[#c26649] text-white rounded-full px-6">
-                                Get Started
+                            <Button className="bg-[#d97757] hover:bg-[#c26649] text-white rounded-full px-4 sm:px-6 text-sm sm:text-base">
+                                <span className="sm:hidden">Join</span>
+                                <span className="hidden sm:inline">Get Started</span>
                             </Button>
                         </Link>
                     </div>
