@@ -48,6 +48,8 @@ export const authAPI = {
 export const adminAPI = {
     getUsers: (status, role) => api.get('/admin/users', { params: { status, role } }),
     updateUserStatus: (userId, status) => api.put(`/admin/users/${userId}/status`, { status }),
+    changeUserPassword: (userId, new_password) => api.put(`/admin/users/${userId}/password`, { new_password }),
+    updateAdminProfile: (data) => api.put('/admin/profile', data),
     getAnalytics: () => api.get('/admin/analytics'),
     getAuditLogs: (limit = 100) => api.get('/admin/audit-logs', { params: { limit } }),
     getPaymentSettings: () => api.get('/admin/payment-settings'),
