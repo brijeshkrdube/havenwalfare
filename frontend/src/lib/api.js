@@ -70,6 +70,24 @@ export const adminAPI = {
 // Public APIs
 export const publicAPI = {
     getSiteSettings: () => api.get('/site-settings'),
+    getEvents: () => api.get('/events'),
+    getEvent: (id) => api.get(`/events/${id}`),
+};
+
+// Event APIs (Admin)
+export const eventsAPI = {
+    getAll: () => api.get('/admin/events'),
+    getById: (id) => api.get(`/events/${id}`),
+    create: (data) => api.post('/admin/events', data),
+    update: (id, data) => api.put(`/admin/events/${id}`, data),
+    delete: (id) => api.delete(`/admin/events/${id}`),
+    uploadImage: (id, file) => {
+        const formData = new FormData();
+        formData.append('file', file);
+        return api.post(`/admin/events/${id}/upload-image`, formData, {
+            headers: { 'Content-Type': 'multipart/form-data' },
+        });
+    },
 };
 
 // Rehab Centers APIs
