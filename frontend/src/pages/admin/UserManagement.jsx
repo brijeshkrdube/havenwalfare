@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { adminAPI, donationsAPI, addictionTypesAPI, rehabCentersAPI } from '../../lib/api';
-import { UserCheck, UserX, Ban, RefreshCw, Search, Eye, X, Heart, HandCoins, Building2, Phone, Mail, Clock } from 'lucide-react';
+import { UserCheck, UserX, Ban, RefreshCw, Search, Eye, X, Heart, HandCoins, Building2, Phone, Mail, Clock, Lock, Key } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
+import { Label } from '../../components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../../components/ui/dialog';
 import { toast } from 'sonner';
@@ -16,6 +17,9 @@ const UserManagement = () => {
     const [statusFilter, setStatusFilter] = useState('all');
     const [selectedUser, setSelectedUser] = useState(null);
     const [showDetailDialog, setShowDetailDialog] = useState(false);
+    const [showPasswordDialog, setShowPasswordDialog] = useState(false);
+    const [newPassword, setNewPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
     const [userDonations, setUserDonations] = useState([]);
     const [addictionTypes, setAddictionTypes] = useState([]);
     const [rehabCenters, setRehabCenters] = useState([]);
